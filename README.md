@@ -30,3 +30,4 @@ Project Dependencies
 
 License
 ---
+GNU LESSER GENERAL PUBLIC LICENSE
