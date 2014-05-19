@@ -21,6 +21,7 @@ Features
 * **Player stuff**
   * Stats
   * Inventory
+  * Leveling
 
 
 Project Dependencies
