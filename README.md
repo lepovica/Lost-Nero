@@ -10,7 +10,7 @@ The Story
 ---
 
 Our hero Nero has been kidnapped from his castle and left far far away from home.
-Now our Nero have to find the a way to survive and find his castle.
+Now our Nero have to find a way to survive and find his castle.
 Otherwise the bad Baba Yaga will eat him.
 
 Features
@@ -32,3 +32,8 @@ Project Dependencies
 License
 ---
 GNU LESSER GENERAL PUBLIC LICENSE
+
+Plan Milestone 2
+---
+Logic of Player and combat
+Little of the GUI part to represent player's abilities
