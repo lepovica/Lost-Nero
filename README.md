@@ -36,4 +36,5 @@ GNU LESSER GENERAL PUBLIC LICENSE
 Plan Milestone 2
 ---
 Logic of Player and combat
-Little of the GUI part to represent player's abilities
+Little of the GUI part to 
+represent player's abilities
