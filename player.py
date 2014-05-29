@@ -38,9 +38,17 @@ class Player(pygame.sprite.Sprite):
                 self.rect.y -= 5
             if key[pygame.K_DOWN]:
                 self.rect.y += 5
+            if key[pygame.K_k]:
+                self.kill()
 
             if self.expirience >= self.max_expirience:
                 self.levelUp(self.level + 1)
+
+        if self.isAlive == False:
+            key = pygame.key.get_pressed()
+            if key[pygame.K_r]:
+                self.reborn()
+
 
 
     def levelUp(self, level):
@@ -55,5 +63,41 @@ class Player(pygame.sprite.Sprite):
 
         self.money += level*1000
 
+    def Attack(self, target):
+        damage = self.attack_power - target.deffence_power
+        if damage > 0:
+            self.expirience += 0.10*self.attack_power + 0.10*damage
+            target.deffence(damage)
+            #return Hit and damage for display event
+        elif damage <= 0:
+            self.expirience += 0.05*self.attack_power
+            target.deffence(0)
+            pass 
+            #return Ressist ----//----
 
+    def kill(self):
+        self.isAlive = False
+        self.life = 0
+        self.image = pygame.image.load('dead_player.png')
+        self.rect = pygame.rect.Rect((self.rect.x, self.rect.y), self.image.get_size())
+        # get time and set timer for reborn.... and check in update for timer to call reborn()
+
+
+
+    def deffence(self, damage):
+        if damage > 0:
+            self.life -= damage
+            self.expirience += 0.05*self.deffence_power
+            if self.life <= 0:
+                self.kill()
+        else:
+            self.expirience += 0.10*self.deffence_power
+
+    def reborn(self):
+        self.isAlive = True
+        self.life = self.max_life
+
+
+
+            
 
