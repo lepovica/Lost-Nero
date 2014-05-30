@@ -1,5 +1,7 @@
 import pygame
 
+import time
+
 
 class Player(pygame.sprite.Sprite):
 
@@ -45,6 +47,8 @@ class Player(pygame.sprite.Sprite):
                 self.levelUp(self.level + 1)
 
         if self.isAlive == False:
+            if time.time() - self.reborn_time > 30:
+                self.reborn()
             key = pygame.key.get_pressed()
             if key[pygame.K_r]:
                 self.reborn()
@@ -80,7 +84,7 @@ class Player(pygame.sprite.Sprite):
         self.life = 0
         self.image = pygame.image.load('dead_player.png')
         self.rect = pygame.rect.Rect((self.rect.x, self.rect.y), self.image.get_size())
-        # get time and set timer for reborn.... and check in update for timer to call reborn()
+        self.reborn_time = time.time()
 
 
 
