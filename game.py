@@ -1,5 +1,7 @@
 import pygame
 import player
+import creep
+import combat
 
 
 class Game(object):
@@ -13,8 +15,13 @@ class Game(object):
         clock = pygame.time.Clock()
 
         background = pygame.image.load('background.jpg')
-        sprites = pygame.sprite.Group()
-        self.player = player.Player(sprites)
+        
+        self.creeps = []
+
+        self.player = player.Player(self.screen, (50, 50), (200, 200), 0.1)
+
+        self.creeps.append(creep.Creep(self.screen, (150, 150), (200, 200), 0.1))
+
 
         while self.running:
             time = clock.tick(30)
@@ -23,9 +30,15 @@ class Game(object):
                 if event.type == pygame.QUIT:
                     return
 
-            sprites.update()
+
             self.screen.blit(background, (0, 0))
-            sprites.draw(self.screen)
+            self.player.update()
+            self.player.blitme()
+
+            for c in self.creeps:
+                c.update(time, self.player)
+                c.blitme()
+
             pygame.display.flip()
 
 
