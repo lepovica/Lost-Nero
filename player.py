@@ -96,6 +96,9 @@ class Player(pygame.sprite.Sprite):
     def reborn(self):
         self.isAlive = True
         self.life = self.max_life
+        self.image = pygame.image.load('player.png')
+        self.rect = pygame.rect.Rect((self.rect.x, self.rect.y), self.image.get_size())
+
 
 
 
