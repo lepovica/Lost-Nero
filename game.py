@@ -1,46 +1,46 @@
 import pygame
-import player
-import creep
+from player import Player
+from creep import Creep
 import combat
+import sys
 
 
-class Game(object):
-    running = True
+def run_game():
+    SCREEN_WIDTH, SCREEN_HEIGHT = 600, 600
 
-    def __init__(self, size):
-        pygame.init()
-        self.screen = pygame.display.set_mode(size)
+    pygame.init()
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    FIELD_RECT = pygame.Rect(20, 20, 580, 580)
+    clock = pygame.time.Clock()
 
-    def main(self):
-        clock = pygame.time.Clock()
+    background = pygame.image.load('background.jpg').convert_alpha()
+    playa_img = pygame.image.load("player.png").convert_alpha()
+    creep_img = pygame.image.load("creep.png").convert_alpha()
 
-        background = pygame.image.load('background.jpg')
-        
-        self.creeps = []
+    creeps = pygame.sprite.Group()
 
-        self.player = player.Player(self.screen, (50, 50), (200, 200), 0.1)
+    playa = Player(screen, playa_img, FIELD_RECT, (50, 50), (0, 0), 0.05)
+    creeps.add(playa)
+    crp = Creep(screen, creep_img, FIELD_RECT, (150, 150), (0, 0), 0.05)
+    creeps.add(crp)
 
-        self.creeps.append(creep.Creep(self.screen, (150, 150), (200, 200), 0.1))
+    while True:
+        time_passed = clock.tick(30)
 
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return
 
-        while self.running:
-            time = clock.tick(30)
+        screen.blit(background, (0, 0))
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    return
-
-
-            self.screen.blit(background, (0, 0))
-            self.player.update()
-            self.player.blitme()
-
-            for c in self.creeps:
-                c.update(time, self.player)
-                c.blitme()
-
-            pygame.display.flip()
+        for crep in creeps:
+            crep.update(time_passed, playa)
+            crep.draw()
+        pygame.display.flip()
 
 
-if __name__ == '__main__':
-    Game((600, 600)).main()
+def exit_game():
+    sys.exit()
+
+
+run_game()

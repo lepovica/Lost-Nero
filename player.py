@@ -1,23 +1,24 @@
 import pygame
 from pygame.sprite import Sprite
-
+import vec2d
 from vec2d import vec2d
+import math
 
 
 class Player(pygame.sprite.Sprite):
 
-    def __init__(self, screen, init_position, init_direction, speed):
+    def __init__(self, img_file, screen, field, init_position, init_direction, speed):
         Sprite.__init__(self)
-        self.name = 'Nero'
+        self.name = 'Creep'
 
-        self.image = pygame.image.load('player.png')
-        self.rect = pygame.rect.Rect((50, 50), self.image.get_size())
+        self.base_image = img_file
+        self.image = self.base_image
         self.screen = screen
-        
+        self.field = field
+
         self.pos = vec2d(init_position)
         self.direction = vec2d(init_direction).normalized()
         self.speed = speed
-
 
         self.isAlive = True
         self.isFighting = False
@@ -36,40 +37,56 @@ class Player(pygame.sprite.Sprite):
         self.max_life = 100
 
         self.money = 1000
-        self.time = pygame.time.Clock()
 
-        self.image_w, self.image_h = self.image.get_size()
-
-    def update(self, player_object = None):
+    def update(self, game_time):
         if self.isAlive == True:
-            key = pygame.key.get_pressed()
-            if key[pygame.K_LEFT]:
-                self.rect.x -= 5
-            if key[pygame.K_RIGHT]:
-                self.rect.x += 5
-            if key[pygame.K_UP]:
-                self.rect.y -= 5
-            if key[pygame.K_DOWN]:
-                self.rect.y += 5
-            if key[pygame.K_k]:
-                self.kill()
+            if self.isFighting == False:
+                key = pygame.key.get_pressed()
+                wanted_pos = vec2d(self.pos)
+                if key[pygame.K_LEFT]:
+                    wanted_pos.x -= 5
 
-            if self.expirience >= self.max_expirience:
-                self.levelUp(self.level + 1)
+                if key[pygame.K_RIGHT]:
+                    wanted_pos.x += 5
+
+                if key[pygame.K_UP]:
+                    wanted_pos.y -= 5
+
+                if key[pygame.K_DOWN]:
+                    wanted_pos.y += 5
+
+                self.change_direction(wanted_pos)
+                self.rotate_image()
+                self.move(game_time)
 
         if self.isAlive == False:
-            if self.time.get_rawtime() - self.reborn_time > 30:
-                self.reborn()
-            key = pygame.key.get_pressed()
-            if key[pygame.K_r]:
+            if pygame.time.get_rawtime() - self.reborn_time > 30:
                 self.reborn()
 
-    def blitme(self):
+        if self.expirience >= self.max_expirience:
+                self.levelUp(self.level + 1)
+
+    def change_direction(self, wanted_pos):
+        dx = self.pos.x - wanted_pos.x
+        dy = self.pos.y - wanted_pos.y
+        self.direction = vec2d(-dx, -dy).normalized()
+
+    def rotate_image(self):
+        self.image = pygame.transform.rotate(
+            self.base_image, -self.direction.angle)
+
+    def move(self, game_time):
+        displacement = vec2d(
+            self.direction.x * self.speed * game_time,
+            self.direction.y * self.speed * game_time)
+
+        self.pos += displacement
+
+    def draw(self):
         draw_pos = self.image.get_rect().move(
-            self.pos.x - self.image_w / 2, 
+            self.pos.x - self.image_w / 2,
             self.pos.y - self.image_h / 2)
         self.screen.blit(self.image, draw_pos)
-
 
     def levelUp(self, level):
         self.level = level
@@ -89,34 +106,28 @@ class Player(pygame.sprite.Sprite):
             self.expirience += 0.10 * self.attack_power + 0.10 * damage
             target.deffence(damage)
             # return Hit and damage for display event
-        elif damage <= 0:
+        else:
             self.expirience += 0.05 * self.attack_power
             target.deffence(0)
-            pass
             # return Ressist ----//----
+
+    def deffence(self, damage):
+        if damage > 0:
+            self.life -= damage
+            self.expirience += 0.10 * self.deffence_power
+            if self.life <= 0:
+                self.kill()
+        else:
+            self.expirience += 0.20 * self.deffence_power
 
     def kill(self):
         self.isAlive = False
         self.life = 0
         self.image = pygame.image.load('dead_player.png')
-        self.rect = pygame.rect.Rect(
-            (self.rect.x, self.rect.y), self.image.get_size())
-        self.reborn_time = self.time.get_rawtime()
 
-    def deffence(self, damage):
-        if damage > 0:
-            self.life -= damage
-            self.expirience += 0.05 * self.deffence_power
-            if self.life <= 0:
-                self.kill()
-        else:
-            self.expirience += 0.10 * self.deffence_power
+        self.reborn_time = self.time.get_rawtime()
 
     def reborn(self):
         self.isAlive = True
         self.life = self.max_life
         self.image = pygame.image.load('player.png')
-        self.rect = pygame.rect.Rect(
-            (self.rect.x, self.rect.y), self.image.get_size())
-
-
