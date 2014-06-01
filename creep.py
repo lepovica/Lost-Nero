@@ -8,11 +8,11 @@ import math
 
 class Creep(Sprite):
 
-    def __init__(self, img_file, screen, field, init_position, init_direction, speed):
+    def __init__(self, screen, field, init_position, init_direction, speed):
         Sprite.__init__(self)
         self.name = 'Creep'
 
-        self.base_image = img_file
+        self.base_image = pygame.image.load('creep.png')
         self.image = self.base_image
         self.screen = screen
         self.field = field
@@ -29,17 +29,20 @@ class Creep(Sprite):
         self.deffence_power = 5
 
         self.life = 100
+        self.image_w, self.image_h = self.image.get_size()
 
     def update(self, time_passed, target):
         if self.isAlive == True:
             if self.check_target(target.pos):
-                    self.get_direction(target.pos)
-            self.change_direction(target, time_passed)
+                self.get_direction(target.pos)
+            else:
+                self.change_direction(target, time_passed)
+
             self.rotate_image()
             self.move(time_passed)
 
             self.image_w, self.image_h = self.image.get_size()
-            bounds_rect = self.screen.inflate(-self.image_w, -self.image_h)
+            bounds_rect = self.field.inflate(-self.image_w, -self.image_h)
 
             if self.pos.x < bounds_rect.left:
                 self.pos.x = bounds_rect.left
@@ -53,9 +56,8 @@ class Creep(Sprite):
             elif self.pos.y > bounds_rect.bottom:
                 self.pos.y = bounds_rect.bottom
                 self.direction.y *= -1
-
-        elif self.isAlive == False:
-            if self.time.get_rawtime() - self.reborn_time > 30:
+        if self.isAlive == False:
+            if pygame.time.get_rawtime() - self.reborn_time > 30:
                 self.reborn()
 
     _counter = 0
@@ -68,12 +70,13 @@ class Creep(Sprite):
 
     def check_target(self, target):
         if 10 ** 2 <= (target.x - self.pos.x) ** 2 + (target.y - self.pos.y) ** 2 <= 50 ** 2:
+            print("ZOMBIE")
             return True
         return False
 
     def rotate_image(self):
         self.image = pygame.transform.rotate(
-            self.image, -self.direction.angle)
+            self.base_image, -self.direction.angle)
 
     def move(self, time_passed):
         displacement = vec2d(
@@ -88,10 +91,11 @@ class Creep(Sprite):
         self.direction = vec2d(-dx, -dy).normalized()
 
     def draw(self):
-        self.draw_rect = self.image.get_rect().move(
+        print("{0} : {1}".format(self.name, self.pos))
+        draw_rect = self.image.get_rect().move(
             self.pos.x - self.image_w / 2,
             self.pos.y - self.image_h / 2)
-        self.screen.blit(self.image, self.draw_rect)
+        self.screen.blit(self.image, self.pos)
 
     def Attack(self, target):
         damage = self.attack_power - target.deffence_power
@@ -99,7 +103,6 @@ class Creep(Sprite):
             target.deffence(damage)
             # return Hit and damage for display event
         else:
-            damage <= 0:
             target.deffence(0)
             # return Ressist ----//----
 
