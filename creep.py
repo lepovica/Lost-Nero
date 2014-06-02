@@ -9,12 +9,14 @@ import math
 
 class Creep(Sprite):
 
+
     def __init__(self, screen, field, init_position, init_direction, speed,
                  img_file, dead_img_file):
+
         Sprite.__init__(self)
         self.name = 'Creep'
 
-        self.base_image = img_file
+        self.base_image = pygame.image.load('creep.png')
         self.image = self.base_image
         self.image_dead = dead_img_file
 
@@ -31,6 +33,7 @@ class Creep(Sprite):
         self.deffence_power = 5
 
         self.life = 100
+
         self.max_life = 100
         self.image_w, self.image_h = self.image.get_size()
         self.reborn_time = 0
@@ -38,6 +41,7 @@ class Creep(Sprite):
     def update(self, time_passed, target):
         if self.isAlive == True:
             if self.check_target(target, time_passed):
+
                 self.get_direction(target.pos)
             else:
                 self.change_direction(target, time_passed)
@@ -72,6 +76,7 @@ class Creep(Sprite):
         if self._counter > randint(400, 500):
             self.direction.rotate(45 * randint(-1, 1))
             self._counter = 0
+
 
     def check_target(self, target, time_passed):
         target_dist = (target.pos.x - self.pos.x) ** 2 + \
@@ -113,6 +118,7 @@ class Creep(Sprite):
             # return Hit and damage for display event
         else:
             target.deffence(0, time_passed)
+
             # return Ressist ----//----
 
     def deffence(self, damage, time_passed):

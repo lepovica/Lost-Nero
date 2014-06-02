@@ -8,12 +8,14 @@ import combat
 
 class Player(Sprite):
 
+
     def __init__(self, screen, field, init_position, init_direction, speed,
                  img_file, dead_img_file):
+
         Sprite.__init__(self)
         self.name = 'Nero'
 
-        self.base_image = img_file
+        self.base_image = pygame.image.load('player.png')
         self.image = self.base_image
         self.image_dead = dead_img_file
 
@@ -42,12 +44,14 @@ class Player(Sprite):
 
         self.money = 1000
         self.image_w, self.image_h = self.image.get_size()
+
         self.reborn_time = 0
 
     def update(self, time_passed):
         if self.isAlive == True:
             key = pygame.key.get_pressed()
             wanted_pos = vec2d(self.pos)
+
 
             if key[pygame.K_LEFT]:
                 wanted_pos.x -= 5
