@@ -4,10 +4,10 @@ import vec2d
 from vec2d import vec2d
 import math
 import combat
+from pygame import Color
 
 
 class Player(Sprite):
-
 
     def __init__(self, screen, field, init_position, init_direction, speed,
                  img_file, dead_img_file):
@@ -52,7 +52,6 @@ class Player(Sprite):
             key = pygame.key.get_pressed()
             wanted_pos = vec2d(self.pos)
 
-
             if key[pygame.K_LEFT]:
                 wanted_pos.x -= 5
 
@@ -84,6 +83,15 @@ class Player(Sprite):
             elif self.pos.y > bounds_rect.bottom:
                 self.pos.y = bounds_rect.bottom
                 self.direction.y *= -1
+
+            health_bar_x = self.pos.x - 50 + self.image_w / 2
+            health_bar_y = self.pos.y - 10
+            self.screen.fill(Color('red'),
+                            (health_bar_x, health_bar_y,
+                             self.max_life / self.level, 4))
+            self.screen.fill(Color('green'),
+                            (health_bar_x, health_bar_y,
+                             self.life / self.level, 4))
 
         elif self.expirience >= self.max_expirience:
             self.levelUp(self.level + 1)

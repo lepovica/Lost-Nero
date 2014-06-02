@@ -26,7 +26,7 @@ def run_game():
     playa = Player(screen, field_rect, (50, 50), (0, 0), 0.07, img_playa,
                    img_playa_dead)
     # creeps.add(playa)
-    crp = Creep(screen, field_rect, (150, 150), (1, 1), 0.05, img_creep,
+    crp = Creep(screen, field_rect, (450, 450), (1, 1), 0.05, img_creep,
                 img_creep_dead)
 
     creeps.add(crp)

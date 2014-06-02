@@ -1,4 +1,5 @@
 import pygame
+from pygame import Color
 import combat
 from pygame.sprite import Sprite
 from random import randint
@@ -8,7 +9,6 @@ import math
 
 
 class Creep(Sprite):
-
 
     def __init__(self, screen, field, init_position, init_direction, speed,
                  img_file, dead_img_file):
@@ -64,6 +64,16 @@ class Creep(Sprite):
             elif self.pos.y > bounds_rect.bottom:
                 self.pos.y = bounds_rect.bottom
                 self.direction.y *= -1
+
+            health_bar_x = self.pos.x - 50 + self.image_w / 2
+            health_bar_y = self.pos.y - 10
+            self.screen.fill(Color('red'),
+                            (health_bar_x, health_bar_y,
+                             self.max_life, 4))
+            self.screen.fill(Color('green'),
+                            (health_bar_x, health_bar_y,
+                             self.life, 4))
+
         if self.isAlive == False:
             self.reborn_time += time_passed
             if self.reborn_time > 3000:
@@ -76,7 +86,6 @@ class Creep(Sprite):
         if self._counter > randint(400, 500):
             self.direction.rotate(45 * randint(-1, 1))
             self._counter = 0
-
 
     def check_target(self, target, time_passed):
         target_dist = (target.pos.x - self.pos.x) ** 2 + \
