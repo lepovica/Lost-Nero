@@ -5,7 +5,6 @@ import combat
 import sys
 
 
-
 def run_game():
     SCREEN_WIDTH, SCREEN_HEIGHT = 600, 600
 
@@ -15,12 +14,18 @@ def run_game():
     clock = pygame.time.Clock()
 
     background = pygame.image.load('background.jpg')
+    img_playa = pygame.image.load('player.png')
+    img_playa_dead = pygame.image.load('dead_player.png')
+    img_creep = pygame.image.load('creep.png')
+    img_creep_dead = pygame.image.load('dead_creep.png')
 
     creeps = pygame.sprite.Group()
 
-    playa = Player(screen, field_rect, (50, 50), (0, 0), 0.07)
+    playa = Player(screen, field_rect, (50, 50), (0, 0), 0.07, img_playa,
+                   img_playa_dead)
     # creeps.add(playa)
-    crp = Creep(screen, field_rect, (150, 150), (1, 1), 0.05)
+    crp = Creep(screen, field_rect, (150, 150), (1, 1), 0.05, img_creep,
+                img_creep_dead)
     creeps.add(crp)
 
     # for i in range(10):

@@ -8,12 +8,15 @@ import combat
 
 class Player(Sprite):
 
-    def __init__(self, screen, field, init_position, init_direction, speed):
+    def __init__(self, screen, field, init_position, init_direction, speed,
+                 img_file, dead_img_file):
         Sprite.__init__(self)
         self.name = 'Nero'
 
-        self.base_image = pygame.image.load('player.png')
+        self.base_image = img_file
         self.image = self.base_image
+        self.image_dead = dead_img_file
+
         self.screen = screen
         self.field = field
 
@@ -134,9 +137,9 @@ class Player(Sprite):
 
     def deffence(self, damage, time_passed):
         if damage > 0:
-            if self.armor > 0 :
-                self.armor -= damage*0.3
-                self.life -= damage*0.7
+            if self.armor > 0:
+                self.armor -= damage * 0.3
+                self.life -= damage * 0.7
             self.expirience += 0.10 * self.deffence_power
             if self.life <= 0:
                 self.kill(time_passed)
@@ -146,12 +149,11 @@ class Player(Sprite):
     def kill(self, time_passed):
         self.isAlive = False
         self.life = 0
-        self.image = pygame.image.load('dead_player.png')
+        self.image = self.image_dead
 
         self.reborn_time = 0
 
     def reborn(self):
         self.isAlive = True
         self.life = self.max_life
-        self.image = pygame.image.load('player.png')
-     
+        self.image = self.base_image

@@ -7,15 +7,17 @@ from vec2d import vec2d
 import math
 
 
-
 class Creep(Sprite):
 
-    def __init__(self, screen, field, init_position, init_direction, speed):
+    def __init__(self, screen, field, init_position, init_direction, speed,
+                 img_file, dead_img_file):
         Sprite.__init__(self)
         self.name = 'Creep'
 
-        self.base_image = pygame.image.load('creep.png')
+        self.base_image = img_file
         self.image = self.base_image
+        self.image_dead = dead_img_file
+
         self.screen = screen
         self.field = field
 
@@ -24,8 +26,6 @@ class Creep(Sprite):
         self.speed = speed
 
         self.isAlive = True
-
-        self.armor = 100
 
         self.attack_power = 10
         self.deffence_power = 5
@@ -74,7 +74,8 @@ class Creep(Sprite):
             self._counter = 0
 
     def check_target(self, target, time_passed):
-        target_dist = (target.pos.x - self.pos.x) ** 2 + (target.pos.y - self.pos.y) ** 2
+        target_dist = (target.pos.x - self.pos.x) ** 2 + \
+            (target.pos.y - self.pos.y) ** 2
         if 10 ** 2 <= target_dist <= 50 ** 2 and target.isAlive == True:
             return True
         elif target_dist <= 10 ** 2 and target.isAlive == True:
@@ -123,11 +124,11 @@ class Creep(Sprite):
     def kill(self, time_passed):
         self.isAlive = False
         self.life = 0
-        self.image = pygame.image.load('dead_creep.png')
-     
+        self.image = self.image_dead
+
         self.reborn_time = 0
 
     def reborn(self):
         self.isAlive = True
         self.life = self.max_life
-        self.image = pygame.image.load('creep.png')
+        self.image = self.base_image
