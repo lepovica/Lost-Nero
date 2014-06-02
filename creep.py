@@ -1,9 +1,11 @@
 import pygame
+import combat
 from pygame.sprite import Sprite
 from random import randint
 
 from vec2d import vec2d
 import math
+
 
 
 class Creep(Sprite):
@@ -29,11 +31,13 @@ class Creep(Sprite):
         self.deffence_power = 5
 
         self.life = 100
+        self.max_life = 100
         self.image_w, self.image_h = self.image.get_size()
+        self.reborn_time = 0
 
     def update(self, time_passed, target):
         if self.isAlive == True:
-            if self.check_target(target.pos):
+            if self.check_target(target, time_passed):
                 self.get_direction(target.pos)
             else:
                 self.change_direction(target, time_passed)
@@ -57,7 +61,8 @@ class Creep(Sprite):
                 self.pos.y = bounds_rect.bottom
                 self.direction.y *= -1
         if self.isAlive == False:
-            if pygame.time.get_rawtime() - self.reborn_time > 30:
+            self.reborn_time += time_passed
+            if self.reborn_time > 3000:
                 self.reborn()
 
     _counter = 0
@@ -68,10 +73,13 @@ class Creep(Sprite):
             self.direction.rotate(45 * randint(-1, 1))
             self._counter = 0
 
-    def check_target(self, target):
-        if 10 ** 2 <= (target.x - self.pos.x) ** 2 + (target.y - self.pos.y) ** 2 <= 50 ** 2:
-            print("ZOMBIE")
+    def check_target(self, target, time_passed):
+        target_dist = (target.pos.x - self.pos.x) ** 2 + (target.pos.y - self.pos.y) ** 2
+        if 10 ** 2 <= target_dist <= 50 ** 2 and target.isAlive == True:
             return True
+        elif target_dist <= 10 ** 2 and target.isAlive == True:
+            combat.start_battle(self, target, time_passed)
+
         return False
 
     def rotate_image(self):
@@ -97,28 +105,29 @@ class Creep(Sprite):
             self.pos.y - self.image_h / 2)
         self.screen.blit(self.image, self.pos)
 
-    def Attack(self, target):
+    def Attack(self, target, time_passed):
         damage = self.attack_power - target.deffence_power
         if damage > 0:
-            target.deffence(damage)
+            target.deffence(damage, time_passed)
             # return Hit and damage for display event
         else:
-            target.deffence(0)
+            target.deffence(0, time_passed)
             # return Ressist ----//----
 
-    def deffence(self, damage):
+    def deffence(self, damage, time_passed):
         if damage > 0:
             self.life -= damage
             if self.life <= 0:
-                self.kill()
+                self.kill(time_passed)
 
-    def kill(self):
+    def kill(self, time_passed):
         self.isAlive = False
         self.life = 0
-        self.image = pygame.image.load('dead_player.png').convert_alpha()
-        self.reborn_time = pygame.time.get_rawtime()
+        self.image = pygame.image.load('dead_creep.png')
+     
+        self.reborn_time = 0
 
     def reborn(self):
         self.isAlive = True
         self.life = self.max_life
-        self.image = pygame.image.load('creep.png').convert_alpha()
+        self.image = pygame.image.load('creep.png')

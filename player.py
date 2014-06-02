@@ -3,6 +3,7 @@ from pygame.sprite import Sprite
 import vec2d
 from vec2d import vec2d
 import math
+import combat
 
 
 class Player(Sprite):
@@ -38,12 +39,13 @@ class Player(Sprite):
 
         self.money = 1000
         self.image_w, self.image_h = self.image.get_size()
+        self.reborn_time = 0
 
     def update(self, time_passed):
         if self.isAlive == True:
             key = pygame.key.get_pressed()
             wanted_pos = vec2d(self.pos)
-            
+
             if key[pygame.K_LEFT]:
                 wanted_pos.x -= 5
 
@@ -80,7 +82,8 @@ class Player(Sprite):
             self.levelUp(self.level + 1)
 
         if self.isAlive == False:
-            if pygame.time.get_rawtime() - self.reborn_time > 30:
+            self.reborn_time += time_passed
+            if self.reborn_time > 3000:
                 self.reborn()
 
     def change_direction(self, wanted_pos):
@@ -118,34 +121,35 @@ class Player(Sprite):
 
         self.money += level * 1000
 
-    def Attack(self, target):
+    def Attack(self, target, time_passed):
         damage = self.attack_power - target.deffence_power
         if damage > 0:
             self.expirience += 0.10 * self.attack_power + 0.10 * damage
-            target.deffence(damage)
+            target.deffence(damage, time_passed)
             # return Hit and damage for display event
         else:
             self.expirience += 0.05 * self.attack_power
-            target.deffence(0)
+            target.deffence(0, time_passed)
             # return Ressist ----//----
 
-    def deffence(self, damage):
+    def deffence(self, damage, time_passed):
         if damage > 0:
             self.life -= damage
             self.expirience += 0.10 * self.deffence_power
             if self.life <= 0:
-                self.kill()
+                self.kill(time_passed)
         else:
             self.expirience += 0.20 * self.deffence_power
 
-    def kill(self):
+    def kill(self, time_passed):
         self.isAlive = False
         self.life = 0
         self.image = pygame.image.load('dead_player.png')
 
-        self.reborn_time = self.time.get_rawtime()
+        self.reborn_time = 0
 
     def reborn(self):
         self.isAlive = True
         self.life = self.max_life
         self.image = pygame.image.load('player.png')
+     
