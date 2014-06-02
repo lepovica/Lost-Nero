@@ -134,7 +134,9 @@ class Player(Sprite):
 
     def deffence(self, damage, time_passed):
         if damage > 0:
-            self.life -= damage
+            if self.armor > 0 :
+                self.armor -= damage*0.3
+                self.life -= damage*0.7
             self.expirience += 0.10 * self.deffence_power
             if self.life <= 0:
                 self.kill(time_passed)
