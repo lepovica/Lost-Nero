@@ -5,13 +5,13 @@ from vec2d import vec2d
 import math
 
 
-class Player(pygame.sprite.Sprite):
+class Player(Sprite):
 
-    def __init__(self, img_file, screen, field, init_position, init_direction, speed):
+    def __init__(self, screen, field, init_position, init_direction, speed):
         Sprite.__init__(self)
-        self.name = 'Creep'
+        self.name = 'Nero'
 
-        self.base_image = img_file
+        self.base_image = pygame.image.load('player.png')
         self.image = self.base_image
         self.screen = screen
         self.field = field
@@ -37,34 +37,51 @@ class Player(pygame.sprite.Sprite):
         self.max_life = 100
 
         self.money = 1000
+        self.image_w, self.image_h = self.image.get_size()
 
-    def update(self, game_time):
+    def update(self, time_passed):
         if self.isAlive == True:
-            if self.isFighting == False:
-                key = pygame.key.get_pressed()
-                wanted_pos = vec2d(self.pos)
-                if key[pygame.K_LEFT]:
-                    wanted_pos.x -= 5
+            key = pygame.key.get_pressed()
+            wanted_pos = vec2d(self.pos)
+            
+            if key[pygame.K_LEFT]:
+                wanted_pos.x -= 5
 
-                if key[pygame.K_RIGHT]:
-                    wanted_pos.x += 5
+            if key[pygame.K_RIGHT]:
+                wanted_pos.x += 5
 
-                if key[pygame.K_UP]:
-                    wanted_pos.y -= 5
+            if key[pygame.K_UP]:
+                wanted_pos.y -= 5
 
-                if key[pygame.K_DOWN]:
-                    wanted_pos.y += 5
+            if key[pygame.K_DOWN]:
+                wanted_pos.y += 5
 
-                self.change_direction(wanted_pos)
-                self.rotate_image()
-                self.move(game_time)
+            self.change_direction(wanted_pos)
+            self.rotate_image()
+            self.move(time_passed)
+
+            self.image_w, self.image_h = self.image.get_size()
+            bounds_rect = self.field.inflate(-self.image_w, -self.image_h)
+
+            if self.pos.x < bounds_rect.left:
+                self.pos.x = bounds_rect.left
+                self.direction.x *= -1
+            elif self.pos.x > bounds_rect.right:
+                self.pos.x = bounds_rect.right
+                self.direction.x *= -1
+            elif self.pos.y < bounds_rect.top:
+                self.pos.y = bounds_rect.top
+                self.direction.y *= -1
+            elif self.pos.y > bounds_rect.bottom:
+                self.pos.y = bounds_rect.bottom
+                self.direction.y *= -1
+
+        elif self.expirience >= self.max_expirience:
+            self.levelUp(self.level + 1)
 
         if self.isAlive == False:
             if pygame.time.get_rawtime() - self.reborn_time > 30:
                 self.reborn()
-
-        if self.expirience >= self.max_expirience:
-                self.levelUp(self.level + 1)
 
     def change_direction(self, wanted_pos):
         dx = self.pos.x - wanted_pos.x
@@ -75,18 +92,19 @@ class Player(pygame.sprite.Sprite):
         self.image = pygame.transform.rotate(
             self.base_image, -self.direction.angle)
 
-    def move(self, game_time):
+    def move(self, time_passed):
         displacement = vec2d(
-            self.direction.x * self.speed * game_time,
-            self.direction.y * self.speed * game_time)
+            self.direction.x * self.speed * time_passed,
+            self.direction.y * self.speed * time_passed)
 
         self.pos += displacement
 
     def draw(self):
-        draw_pos = self.image.get_rect().move(
+        print("{0} : {1}".format(self.name, self.pos))
+        draw_rect = self.image.get_rect().move(
             self.pos.x - self.image_w / 2,
             self.pos.y - self.image_h / 2)
-        self.screen.blit(self.image, draw_pos)
+        self.screen.blit(self.image, self.pos)
 
     def levelUp(self, level):
         self.level = level
