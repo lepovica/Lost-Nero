@@ -6,6 +6,8 @@ import math
 import combat
 from pygame import Color
 
+# make statuses form player and creep and finish moving with mouse
+
 
 class Player(Sprite):
 
@@ -26,8 +28,7 @@ class Player(Sprite):
         self.direction = vec2d(init_direction).normalized()
         self.speed = speed
 
-        self.isAlive = True
-        self.isFighting = False
+        self.state = self.ALIVE
 
         self.level = 1
         self.expirience = 0
@@ -47,8 +48,10 @@ class Player(Sprite):
 
         self.reborn_time = 0
 
+    (ALIVE, DEAD, CHASING, FIGHTING, MOVING) = range(5)
+
     def update(self, time_passed):
-        if self.isAlive == True:
+        if self.state == self.ALIVE:
             key = pygame.key.get_pressed()
             wanted_pos = vec2d(self.pos)
 
@@ -96,10 +99,13 @@ class Player(Sprite):
         elif self.expirience >= self.max_expirience:
             self.levelUp(self.level + 1)
 
-        if self.isAlive == False:
+        if self.state == self.DEAD:
             self.reborn_time += time_passed
             if self.reborn_time > 3000:
                 self.reborn()
+
+        if self.state == self.CHASING:
+            pass
 
     def change_direction(self, wanted_pos):
         dx = self.pos.x - wanted_pos.x
@@ -136,7 +142,13 @@ class Player(Sprite):
 
         self.money += level * 1000
 
-    def Attack(self, target, time_passed):
+    def move_to(self, pos, time_passed):
+        pass
+
+    def chasing(self, pos, time_passed):
+        pass
+
+    def attack(self, target, time_passed):
         damage = self.attack_power - target.deffence_power
         if damage > 0:
             self.expirience += 0.10 * self.attack_power + 0.10 * damage
@@ -159,13 +171,13 @@ class Player(Sprite):
             self.expirience += 0.20 * self.deffence_power
 
     def kill(self, time_passed):
-        self.isAlive = False
+        self.state = self.DEAD
         self.life = 0
         self.image = self.image_dead
 
         self.reborn_time = 0
 
     def reborn(self):
-        self.isAlive = True
+        self.state = self.ALIVE
         self.life = self.max_life
         self.image = self.base_image

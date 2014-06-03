@@ -31,15 +31,19 @@ def run_game():
 
     creeps.add(crp)
 
-    # for i in range(10):
-    #     creeps.add(Creep(screen, field_rect, (150, 150), (1, 1), 0.05))
+    for i in range(10):
+        creeps.add(Creep(screen, field_rect, (150, 150), (1, 1), 0.05, 
+            img_creep, img_creep_dead))
 
     while True:
         time_passed = clock.tick(30)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                return
+                exit_game()
+        if event.type == pygame.MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[0]:
+            for crep in creeps:
+                crep.mouse_click(pygame.mouse.get_pos(), playa, time_passed)
 
         screen.blit(background, (0, 0))
 

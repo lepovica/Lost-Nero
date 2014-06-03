@@ -27,7 +27,7 @@ class Creep(Sprite):
         self.direction = vec2d(init_direction).normalized()
         self.speed = speed
 
-        self.isAlive = True
+        self.state = self.ALIVE
 
         self.attack_power = 10
         self.deffence_power = 5
@@ -38,8 +38,10 @@ class Creep(Sprite):
         self.image_w, self.image_h = self.image.get_size()
         self.reborn_time = 0
 
+    (ALIVE, DEAD) = range(2)
+
     def update(self, time_passed, target):
-        if self.isAlive == True:
+        if self.state == self.ALIVE:
             if self.check_target(target, time_passed):
 
                 self.get_direction(target.pos)
@@ -74,10 +76,28 @@ class Creep(Sprite):
                             (health_bar_x, health_bar_y,
                              self.life, 4))
 
-        if self.isAlive == False:
+        if self.state == Creep.DEAD:
             self.reborn_time += time_passed
             if self.reborn_time > 3000:
                 self.reborn()
+
+    def mouse_click(self, pos, target, time_passed):
+        mouse_pos = vec2d(pos)
+        if self.is_inside_me(mouse_pos):
+            combat.player_start_battle(target, self, time_passed)
+        else:
+            target.move_to(pos, time_passed)
+
+    def is_inside_me(self, pos):
+        img_point = pos - vec2d(
+            int(self.pos.x - self.image_w / 2),
+            int(self.pos.y - self.image_h / 2))
+
+        try:
+            pix = self.image.get_at(img_point)
+            return pix[3] > 0
+        except IndexError:
+            return False
 
     _counter = 0
 
@@ -90,10 +110,10 @@ class Creep(Sprite):
     def check_target(self, target, time_passed):
         target_dist = (target.pos.x - self.pos.x) ** 2 + \
             (target.pos.y - self.pos.y) ** 2
-        if 10 ** 2 <= target_dist <= 50 ** 2 and target.isAlive == True:
+        if 10 ** 2 <= target_dist <= 50 ** 2 and target.state == self.ALIVE:
             return True
-        elif target_dist <= 10 ** 2 and target.isAlive == True:
-            combat.start_battle(self, target, time_passed)
+        elif target_dist <= 10 ** 2 and target.state == self.ALIVE:
+            combat.creep_start_battle(self, target, time_passed)
 
         return False
 
@@ -120,7 +140,7 @@ class Creep(Sprite):
             self.pos.y - self.image_h / 2)
         self.screen.blit(self.image, self.pos)
 
-    def Attack(self, target, time_passed):
+    def attack(self, target, time_passed):
         damage = self.attack_power - target.deffence_power
         if damage > 0:
             target.deffence(damage, time_passed)
@@ -137,13 +157,13 @@ class Creep(Sprite):
                 self.kill(time_passed)
 
     def kill(self, time_passed):
-        self.isAlive = False
+        self.state = Creep.DEAD
         self.life = 0
         self.image = self.image_dead
 
         self.reborn_time = 0
 
     def reborn(self):
-        self.isAlive = True
+        self.state = self.ALIVE
         self.life = self.max_life
         self.image = self.base_image
