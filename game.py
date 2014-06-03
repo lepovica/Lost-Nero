@@ -47,7 +47,6 @@ def run_game():
                     combat.player_start_battle(playa, crep, time_passed)
                 else:
                     playa.moving(pygame.mouse.get_pos())
-                # crep.mouse_click(pygame.mouse.get_pos(), playa, time_passed)
 
         screen.blit(background, (0, 0))
 

@@ -99,15 +99,11 @@ class Creep(Sprite):
 
 
     def is_inside_me(self, pos):
-        img_point = pos - vec2d(
-            int(self.pos.x - self.image_w / 2),
-            int(self.pos.y - self.image_h / 2))
+        if (self.pos.x - pos.x) ** 2 + (self.pos.y - pos.y) ** 2 <= self.image_h ** 2:
+            return True
+        return False
 
-        try:
-            pix = self.image.get_at(img_point)
-            return pix[3] > 0
-        except IndexError:
-            return False
+       
 
     _counter = 0
 
