@@ -55,6 +55,10 @@ class Player(Sprite):
             pass
 
         if self.state == self.MOVING:
+            key = pygame.key.get_pressed()
+            if key[pygame.K_LEFT] or key[pygame.K_RIGHT] or key[pygame.K_DOWN] or key[pygame.K_UP]:
+                self.state = self.ALIVE
+
             if self.get_destination():
                 self.state = self.ALIVE
                 self.health_bar()
@@ -114,7 +118,7 @@ class Player(Sprite):
         if self.state == self.CHASING:
             pass
 
-            
+
     def get_destination(self):
         if (self.pos.x - self.moving_pos.x)**2 + (self.pos.y - self.moving_pos.y) ** 2 <= 10 ** 2:
             return True
