@@ -51,6 +51,20 @@ class Player(Sprite):
     (ALIVE, DEAD, CHASING, FIGHTING, MOVING) = range(5)
 
     def update(self, time_passed):
+        if self.state == self.FIGHTING:
+            pass
+
+        if self.state == self.MOVING:
+            if self.get_destination():
+                self.state = self.ALIVE
+                self.health_bar()
+            else:
+                self.move(time_passed)
+                self.health_bar()
+
+        if self.state == self.CHASING:
+            pass
+
         if self.state == self.ALIVE:
             key = pygame.key.get_pressed()
             wanted_pos = vec2d(self.pos)
@@ -87,14 +101,7 @@ class Player(Sprite):
                 self.pos.y = bounds_rect.bottom
                 self.direction.y *= -1
 
-            health_bar_x = self.pos.x - 50 + self.image_w / 2
-            health_bar_y = self.pos.y - 10
-            self.screen.fill(Color('red'),
-                            (health_bar_x, health_bar_y,
-                             self.max_life / self.level, 4))
-            self.screen.fill(Color('green'),
-                            (health_bar_x, health_bar_y,
-                             self.life / self.level, 4))
+            self.health_bar()
 
         elif self.expirience >= self.max_expirience:
             self.levelUp(self.level + 1)
@@ -106,6 +113,22 @@ class Player(Sprite):
 
         if self.state == self.CHASING:
             pass
+
+            
+    def get_destination(self):
+        if (self.pos.x - self.moving_pos.x)**2 + (self.pos.y - self.moving_pos.y) ** 2 <= 10 ** 2:
+            return True
+        return False
+
+    def health_bar(self):
+        health_bar_x = self.pos.x - 50 + self.image_w / 2
+        health_bar_y = self.pos.y - 10
+        self.screen.fill(Color('red'),
+                        (health_bar_x, health_bar_y,
+                         self.max_life / self.level, 4))
+        self.screen.fill(Color('green'),
+                        (health_bar_x, health_bar_y,
+                         self.life / self.level, 4))
 
     def change_direction(self, wanted_pos):
         dx = self.pos.x - wanted_pos.x
@@ -142,11 +165,16 @@ class Player(Sprite):
 
         self.money += level * 1000
 
-    def move_to(self, pos, time_passed):
-        pass
+    def moving(self, pos):
+        wanted_pos = vec2d(pos)
+        self.state = self.MOVING
+        self.change_direction(wanted_pos)
+        self.rotate_image()
+        self.moving_pos = wanted_pos
 
-    def chasing(self, pos, time_passed):
-        pass
+
+    def chasing(self, target, time_passed):
+        self.state = self.CHASING
 
     def attack(self, target, time_passed):
         damage = self.attack_power - target.deffence_power

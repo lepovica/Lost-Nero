@@ -43,7 +43,11 @@ def run_game():
                 exit_game()
         if event.type == pygame.MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[0]:
             for crep in creeps:
-                crep.mouse_click(pygame.mouse.get_pos(), playa, time_passed)
+                if crep.mouse_click(pygame.mouse.get_pos()):
+                    combat.player_start_battle(playa, crep, time_passed)
+                else:
+                    playa.moving(pygame.mouse.get_pos())
+                # crep.mouse_click(pygame.mouse.get_pos(), playa, time_passed)
 
         screen.blit(background, (0, 0))
 

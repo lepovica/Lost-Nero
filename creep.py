@@ -81,12 +81,22 @@ class Creep(Sprite):
             if self.reborn_time > 3000:
                 self.reborn()
 
-    def mouse_click(self, pos, target, time_passed):
+    def health_bar(self):
+        health_bar_x = self.pos.x - 50 + self.image_w / 2
+        health_bar_y = self.pos.y - 10
+        self.screen.fill(Color('red'),
+                        (health_bar_x, health_bar_y,
+                         self.max_life, 4))
+        self.screen.fill(Color('green'),
+                        (health_bar_x, health_bar_y,
+                         self.life, 4))
+
+    def mouse_click(self, pos):
         mouse_pos = vec2d(pos)
         if self.is_inside_me(mouse_pos):
-            combat.player_start_battle(target, self, time_passed)
-        else:
-            target.move_to(pos, time_passed)
+            return True
+        return False
+
 
     def is_inside_me(self, pos):
         img_point = pos - vec2d(
