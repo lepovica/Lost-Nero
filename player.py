@@ -5,6 +5,7 @@ from vec2d import vec2d
 import math
 import combat
 from pygame import Color
+import sys
 
 # finish chasing and creep killing with mouse and do creep code look pretty
 
@@ -179,7 +180,7 @@ class Player(Sprite):
         self.money += level * 1000
 
     def moving(self, pos):
-        if self.state == ALIVE:
+        if self.state == self.ALIVE:
             wanted_pos = vec2d(pos)
             self.state = self.MOVING
             self.change_direction(wanted_pos)
@@ -218,7 +219,8 @@ class Player(Sprite):
         self.state = self.DEAD
         self.life = 0
         self.image = self.image_dead
-
+        print("DEAD")
+        sys.exit()
         self.reborn_time = 0
 
     def reborn(self):

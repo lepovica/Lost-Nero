@@ -14,5 +14,6 @@ def player_start_battle(attacker, target, time_passed):
     elif (attacker.pos.x - target.pos.x) ** 2 + (attacker.pos.y - target.pos.y) ** 2 < 50 ** 2:
         while target.life > 0 and attacker.life > 0:
             attacker.attack(target, time_passed)
+            target.attack(attacker, time_passed)
     else:
     	pass

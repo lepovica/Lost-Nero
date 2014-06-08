@@ -42,14 +42,14 @@ class Creep(Sprite):
 
     def update(self, time_passed, target):
         if self.state == self.ALIVE:
-            if self.check_target(target, time_passed):
+            # if self.check_target(target, time_passed):
 
-                self.get_direction(target.pos)
-            else:
-                self.change_direction(target, time_passed)
+            #     self.get_direction(target.pos)
+            # else:
+            #     self.change_direction(target, time_passed)
 
-            self.rotate_image()
-            self.move(time_passed)
+            # self.rotate_image()
+            # self.move(time_passed)
 
             self.image_w, self.image_h = self.image.get_size()
             bounds_rect = self.field.inflate(-self.image_w, -self.image_h)

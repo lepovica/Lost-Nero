@@ -57,6 +57,7 @@ def run_game():
             crep.update(time_passed, playa)
             crep.draw()
         pygame.display.flip()
+        print(playa.life)
 
 
 def exit_game():
