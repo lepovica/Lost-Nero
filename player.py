@@ -179,11 +179,12 @@ class Player(Sprite):
         self.money += level * 1000
 
     def moving(self, pos):
-        wanted_pos = vec2d(pos)
-        self.state = self.MOVING
-        self.change_direction(wanted_pos)
-        self.rotate_image()
-        self.moving_pos = wanted_pos
+        if self.state == ALIVE:
+            wanted_pos = vec2d(pos)
+            self.state = self.MOVING
+            self.change_direction(wanted_pos)
+            self.rotate_image()
+            self.moving_pos = wanted_pos
 
 
     def chasing(self, target):
