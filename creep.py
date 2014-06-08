@@ -3,6 +3,7 @@ from pygame import Color
 import combat
 from pygame.sprite import Sprite
 from random import randint
+import random
 
 from vec2d import vec2d
 import math
@@ -37,19 +38,30 @@ class Creep(Sprite):
         self.max_life = 100
         self.image_w, self.image_h = self.image.get_size()
         self.reborn_time = 0
-
+        self._time_moving = 0
+        self._time_moving_max = random.randint(5000, 10000)
     (ALIVE, DEAD) = range(2)
 
     def update(self, time_passed, target):
         if self.state == self.ALIVE:
-            # if self.check_target(target, time_passed):
+            self._time_moving += time_passed
+            if self.check_target(target, time_passed):
 
-            #     self.get_direction(target.pos)
-            # else:
-            #     self.change_direction(target, time_passed)
+                self.get_direction(target.pos)
+            else:
+                self.change_direction(target, time_passed)
+            if self._time_moving <= self._time_moving_max:
+                self.rotate_image()
+                self.move(time_passed)
+            else:
+                self._time_moving_max = 0
+                if self._time_moving >= 5000:
+                    self._time_moving -= 2*time_passed
+                else:
+                    self._time_moving = 0
+                    self._time_moving_max = random.randint(5000, 10000)
 
-            # self.rotate_image()
-            # self.move(time_passed)
+
 
             self.image_w, self.image_h = self.image.get_size()
             bounds_rect = self.field.inflate(-self.image_w, -self.image_h)
@@ -97,13 +109,10 @@ class Creep(Sprite):
             return True
         return False
 
-
     def is_inside_me(self, pos):
         if (self.pos.x - pos.x) ** 2 + (self.pos.y - pos.y) ** 2 <= self.image_h ** 2:
             return True
         return False
-
-       
 
     _counter = 0
 
@@ -119,7 +128,7 @@ class Creep(Sprite):
         if 10 ** 2 <= target_dist <= 50 ** 2 and target.state == self.ALIVE:
             return True
         elif target_dist <= 10 ** 2 and target.state == self.ALIVE:
-            combat.creep_start_battle(self, target, time_passed)
+            combat.Battle.creep_start_battle(self, target, time_passed)
 
         return False
 

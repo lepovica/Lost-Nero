@@ -53,7 +53,12 @@ class Player(Sprite):
 
     def update(self, time_passed):
         if self.state == self.FIGHTING:
-            pass
+            key = pygame.key.get_pressed()
+            if key[pygame.K_LEFT] or key[pygame.K_RIGHT] or key[pygame.K_DOWN] or key[pygame.K_UP]:
+                self.state = self.ALIVE
+
+            combat.Battle.do_battle(self, self.chasing_target, time_passed)
+            self.health_bar()
 
         if self.state == self.MOVING:
             key = pygame.key.get_pressed()
@@ -78,6 +83,7 @@ class Player(Sprite):
                 self.change_direction(self.chasing_target.pos)
                 self.rotate_image()
                 self.move(time_passed)
+            self.health_bar()
 
         if self.state == self.ALIVE:
             key = pygame.key.get_pressed()
@@ -125,12 +131,8 @@ class Player(Sprite):
             if self.reborn_time > 3000:
                 self.reborn()
 
-        if self.state == self.CHASING:
-            pass
-
-
     def get_destination(self):
-        if (self.pos.x - self.moving_pos.x)**2 + (self.pos.y - self.moving_pos.y) ** 2 <= 10 ** 2:
+        if (self.pos.x - self.moving_pos.x) ** 2 + (self.pos.y - self.moving_pos.y) ** 2 <= 10 ** 2:
             return True
         return False
 
@@ -187,11 +189,14 @@ class Player(Sprite):
             self.rotate_image()
             self.moving_pos = wanted_pos
 
-
     def chasing(self, target):
         self.state = self.CHASING
         self.chasing_target = target
 
+    def get_chasing_target(self):
+        if (self.chasing_target.pos.x - self.pos.x) ** 2 + (self.chasing_target.pos.y - self.pos.y) ** 2 <= 50 ** 2:
+            return True
+        return False
 
     def attack(self, target, time_passed):
         damage = self.attack_power - target.deffence_power
@@ -219,8 +224,6 @@ class Player(Sprite):
         self.state = self.DEAD
         self.life = 0
         self.image = self.image_dead
-        print("DEAD")
-        sys.exit()
         self.reborn_time = 0
 
     def reborn(self):

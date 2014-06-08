@@ -5,7 +5,6 @@ import combat
 import sys
 
 
-
 def run_game():
     SCREEN_WIDTH, SCREEN_HEIGHT = 600, 600
 
@@ -32,8 +31,8 @@ def run_game():
     creeps.add(crp)
 
     for i in range(10):
-        creeps.add(Creep(screen, field_rect, (150, 150), (1, 1), 0.05, 
-            img_creep, img_creep_dead))
+        creeps.add(Creep(screen, field_rect, (150, 150), (1, 1), 0.05,
+                         img_creep, img_creep_dead))
 
     while True:
         time_passed = clock.tick(30)
@@ -44,7 +43,7 @@ def run_game():
         if event.type == pygame.MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[0]:
             for crep in creeps:
                 if crep.mouse_click(pygame.mouse.get_pos()):
-                    combat.player_start_battle(playa, crep, time_passed)
+                    combat.Battle.player_start_battle(playa, crep, time_passed)
                 else:
                     playa.moving(pygame.mouse.get_pos())
 
@@ -57,7 +56,6 @@ def run_game():
             crep.update(time_passed, playa)
             crep.draw()
         pygame.display.flip()
-        print(playa.life)
 
 
 def exit_game():
