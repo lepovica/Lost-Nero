@@ -7,7 +7,7 @@ import combat
 from pygame import Color
 import sys
 
-# finish chasing and creep killing with mouse and do creep code look pretty
+# do creep code look pretty
 
 
 class Player(Sprite):
@@ -56,9 +56,18 @@ class Player(Sprite):
             key = pygame.key.get_pressed()
             if key[pygame.K_LEFT] or key[pygame.K_RIGHT] or key[pygame.K_DOWN] or key[pygame.K_UP]:
                 self.state = self.ALIVE
-
-            combat.Battle.do_battle(self, self.chasing_target, time_passed)
-            self.health_bar()
+            if self.life > 0 and self.chasing_target.life > 0:
+                self.change_direction(self.chasing_target.pos)
+                self.rotate_image()
+                combat.Battle.do_battle(self, self.chasing_target, time_passed)
+                self.health_bar()
+            else:
+                if self.life > 0 :
+                    self.state = self.ALIVE
+                    self.health_bar()
+                else:
+                    self.state = self.DEAD
+            
 
         if self.state == self.MOVING:
             key = pygame.key.get_pressed()
