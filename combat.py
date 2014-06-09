@@ -2,13 +2,14 @@ import player
 import creep
 import pygame
 
+
 class Battle():
     _battle_time = 0
 
     @classmethod
     def creep_start_battle(cls, attacker, target, time_passed):
-        cls._battle_time = 0
-        cls.do_battle(attacker, target, time_passed)
+        attacker.attack(target, time_passed)
+        target.attack(attacker, time_passed)
 
     @classmethod
     def player_start_battle(cls, attacker, target, time_passed):
