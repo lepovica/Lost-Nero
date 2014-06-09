@@ -32,9 +32,10 @@ def run_game():
 
     creeps.add(crp)
 
-    # for i in range(10):
-    #     creeps.add(Creep(screen, field_rect, (150, 150), (1, 1), 0.05,
-    #                      img_creep, img_creep_dead))
+    for i in range(10):
+        creeps.add(Creep(screen, field_rect, (random.randint(50, 550),
+                                              random.randint(50, 550)), (1, 1),
+                                              0.05, img_creep, img_creep_dead))
 
     while True:
         time_passed = clock.tick(30)
@@ -50,7 +51,8 @@ def run_game():
                 for crep in creeps:
                     if crep.mouse_click(pygame.mouse.get_pos()):
                         flag = True
-                        combat.Battle.player_start_battle(playa, crep, time_passed)
+                        combat.Battle.player_start_battle(
+                            playa, crep, time_passed)
                     else:
                         flag = False
 
@@ -59,8 +61,6 @@ def run_game():
 
         if not paused:
             screen.blit(background, (0, 0))
-
-
 
             for crep in creeps:
                 crep.update(time_passed, playa)
