@@ -7,6 +7,7 @@ import sys
 
 def run_game():
     flag = False
+    paused = False
     SCREEN_WIDTH, SCREEN_HEIGHT = 600, 600
 
     pygame.init()
@@ -41,29 +42,38 @@ def run_game():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit_game()
-        if event.type == pygame.MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[0]:
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    paused = not paused
+
+            elif event.type == pygame.MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[0]:
+                for crep in creeps:
+                    if crep.mouse_click(pygame.mouse.get_pos()):
+                        flag = True
+                        combat.Battle.player_start_battle(playa, crep, time_passed)
+                    else:
+                        flag = False
+
+                if flag == False:
+                    playa.moving(pygame.mouse.get_pos())
+
+        if not paused:
+            screen.blit(background, (0, 0))
+
+
+
             for crep in creeps:
-                if crep.mouse_click(pygame.mouse.get_pos()):
-                    flag = True
-                    combat.Battle.player_start_battle(playa, crep, time_passed)
-                else:
-                    flag = False
+                crep.update(time_passed, playa)
+                crep.draw(time_passed)
 
-            if flag == False:
-                playa.moving(pygame.mouse.get_pos())
+            playa.update(time_passed)
+            playa.draw(time_passed)
 
-        screen.blit(background, (0, 0))
+            pygame.display.flip()
 
-
-
-        for crep in creeps:
-            crep.update(time_passed, playa)
-            crep.draw(time_passed)
-
-        playa.update(time_passed)
-        playa.draw(time_passed)
-
-        pygame.display.flip()
+        else:
+            pass
+            # menus
 
 
 def exit_game():
