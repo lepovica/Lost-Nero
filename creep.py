@@ -113,7 +113,7 @@ class Creep(Sprite):
         return False
 
     def is_inside_me(self, pos):
-        if (self.pos.x - pos.x) ** 2 + (self.pos.y - pos.y) ** 2 <= self.image_h ** 2:
+        if (self.pos.x - pos.x) ** 2 + (self.pos.y - pos.y) ** 2 <= 25 ** 2:
             return True
         return False
 

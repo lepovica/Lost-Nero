@@ -3,11 +3,12 @@ from player import Player
 from creep import Creep
 import combat
 import sys
+import random
 
 
 def run_game():
     flag = False
-    paused = False
+    paused = True
     SCREEN_WIDTH, SCREEN_HEIGHT = 600, 600
 
     pygame.init()
@@ -32,7 +33,7 @@ def run_game():
 
     creeps.add(crp)
 
-    for i in range(10):
+    for i in range(5):
         creeps.add(Creep(screen, field_rect, (random.randint(50, 550),
                                               random.randint(50, 550)), (1, 1),
                                               0.05, img_creep, img_creep_dead))
@@ -72,8 +73,11 @@ def run_game():
             pygame.display.flip()
 
         else:
-            pass
-            # menus
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    exit_game()
+
 
 
 def exit_game():
