@@ -9,6 +9,48 @@ import sys
 
 # do creep code look pretty
 
+class Bullet(Sprite):
+
+    def __init__(self, target, pos, img_file):
+        Sprite.__init__(self)
+        self.pos = vec2d(pos)
+        self.base_image = img_file
+        self.image = self.base_image
+        self.speed = 0.5
+        self.target = target
+        self.state = self.MOVING
+
+    (MOVING, DEAD) = range(2)
+
+    def update(self, time_passed):
+        if (self.target.pos.x - self.pos.x)**2 + (self.target.pos.y - self.pos.y)**2 <= 20**2:
+            self.state = self.DEAD
+        else:
+            self.change_direction()
+            self.move(time_passed)
+            self.rotate_image()
+            
+
+    def change_direction(self):
+        self.direction = self.get_direction(self.target.pos)
+
+
+    def get_direction(self, wanted_pos):
+        dx = self.pos.x - wanted_pos.x
+        dy = self.pos.y - wanted_pos.y
+        return vec2d(-dx, -dy).normalized()
+
+    def rotate_image(self):
+        self.image = pygame.transform.rotate(
+            self.base_image, -self.direction.angle)
+
+    def move(self, time_passed):
+        displacement = vec2d(
+            self.direction.x * self.speed * time_passed,
+            self.direction.y * self.speed * time_passed)
+
+        self.pos += displacement
+
 
 class Player(Sprite):
 
@@ -18,7 +60,7 @@ class Player(Sprite):
         Sprite.__init__(self)
         self.name = 'Nero'
 
-        self.base_image = pygame.image.load('player.png')
+        self.base_image = img_file
         self.image = self.base_image
         self.image_dead = dead_img_file
 
@@ -48,6 +90,7 @@ class Player(Sprite):
         self.image_w, self.image_h = self.image.get_size()
 
         self.reborn_time = 0
+        self.bullets = []
 
     (ALIVE, DEAD, CHASING, FIGHTING, MOVING) = range(5)
 
@@ -59,6 +102,8 @@ class Player(Sprite):
             if self.life > 0 and self.chasing_target.life > 0:
                 self.change_direction(self.chasing_target.pos)
                 self.rotate_image()
+                if 50**2 <= (self.chasing_target.pos.x - self.pos.x)**2 + (self.chasing_target.pos.y - self.pos.y) **2:
+                    self.move(time_passed)
                 combat.Battle.do_battle(self, self.chasing_target, time_passed)
                 self.health_bar()
             else:
@@ -110,9 +155,11 @@ class Player(Sprite):
             if key[pygame.K_DOWN]:
                 wanted_pos.y += 5
 
-            self.change_direction(wanted_pos)
-            self.rotate_image()
-            self.move(time_passed)
+
+            if self.pos != wanted_pos:
+                self.change_direction(wanted_pos)
+                self.rotate_image()
+                self.move(time_passed)
 
             self.image_w, self.image_h = self.image.get_size()
             bounds_rect = self.field.inflate(-self.image_w, -self.image_h)
@@ -171,12 +218,24 @@ class Player(Sprite):
 
         self.pos += displacement
 
-    def draw(self):
+    def draw(self, time_passed):
         print("{0} : {1}".format(self.name, self.pos))
         draw_rect = self.image.get_rect().move(
             self.pos.x - self.image_w / 2,
             self.pos.y - self.image_h / 2)
         self.screen.blit(self.image, self.pos)
+
+        for bullet in self.bullets:
+            if bullet.state == bullet.MOVING:
+                bullet.update(time_passed)
+                bullet_rect = bullet.image.get_rect().move(
+                    bullet.pos.x - 7,
+                    bullet.pos.y - 7)
+                self.screen.blit(bullet.image, bullet_rect)
+            if bullet.state == bullet.DEAD:
+                print("-------------REMOVE BULLET _-------------------")
+                self.bullets.remove(bullet)
+
 
     def levelUp(self, level):
         self.level = level
@@ -208,6 +267,7 @@ class Player(Sprite):
         return False
 
     def attack(self, target, time_passed):
+        self.bullets.append(Bullet(target, self.pos, pygame.image.load('bullet.jpg')))
         damage = self.attack_power - target.deffence_power
         if damage > 0:
             self.expirience += 0.10 * self.attack_power + 0.10 * damage

@@ -17,7 +17,7 @@ class Creep(Sprite):
         Sprite.__init__(self)
         self.name = 'Creep'
 
-        self.base_image = pygame.image.load('creep.png')
+        self.base_image = img_file
         self.image = self.base_image
         self.image_dead = dead_img_file
 
@@ -125,7 +125,7 @@ class Creep(Sprite):
     def check_target(self, target, time_passed):
         target_dist = (target.pos.x - self.pos.x) ** 2 + \
             (target.pos.y - self.pos.y) ** 2
-        if 10 ** 2 <= target_dist <= 50 ** 2 and target.state == self.ALIVE:
+        if 30 ** 2 <= target_dist <= 50 ** 2 and target.state == self.ALIVE:
             return True
         elif target_dist <= 10 ** 2 and target.state == self.ALIVE:
             combat.Battle.creep_start_battle(self, target, time_passed)

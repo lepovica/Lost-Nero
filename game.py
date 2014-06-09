@@ -25,7 +25,7 @@ def run_game():
     playa = Player(screen, field_rect, (50, 50), (0, 0), 0.07, img_playa,
                    img_playa_dead)
     # creeps.add(playa)
-    crp = Creep(screen, field_rect, (450, 450), (1, 1), 0.05, img_creep,
+    crp = Creep(screen, field_rect, (150, 150), (1, 1), 0.05, img_creep,
                 img_creep_dead)
 
     creeps.add(crp)
@@ -49,12 +49,15 @@ def run_game():
 
         screen.blit(background, (0, 0))
 
-        playa.update(time_passed)
-        playa.draw()
+
 
         for crep in creeps:
             crep.update(time_passed, playa)
             crep.draw()
+
+        playa.update(time_passed)
+        playa.draw(time_passed)
+        
         pygame.display.flip()
 
 
