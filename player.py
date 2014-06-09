@@ -208,7 +208,7 @@ class Player(Sprite):
         self.money += level * 1000
 
     def moving(self, pos):
-        if self.state == self.ALIVE:
+        if self.state != self.DEAD:
             wanted_pos = vec2d(pos)
             self.state = self.MOVING
             self.change_direction(wanted_pos)
