@@ -6,6 +6,7 @@ import sys
 
 
 def run_game():
+    flag = False
     SCREEN_WIDTH, SCREEN_HEIGHT = 600, 600
 
     pygame.init()
@@ -43,9 +44,13 @@ def run_game():
         if event.type == pygame.MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[0]:
             for crep in creeps:
                 if crep.mouse_click(pygame.mouse.get_pos()):
+                    flag = True
                     combat.Battle.player_start_battle(playa, crep, time_passed)
                 else:
-                    playa.moving(pygame.mouse.get_pos())
+                    flag = False
+
+            if flag == False:
+                playa.moving(pygame.mouse.get_pos())
 
         screen.blit(background, (0, 0))
 
