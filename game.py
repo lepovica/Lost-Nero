@@ -9,7 +9,7 @@ import random
 
 def run_game():
     flag = False
-    paused = False
+    paused = True
     SCREEN_WIDTH, SCREEN_HEIGHT = 600, 600
 
     pygame.init()
@@ -36,15 +36,20 @@ def run_game():
 
     for i in range(10):
         creeps.add(Creep(screen, field_rect, (random.randint(50, 550),
-            random.randint(50, 550)), (1, 1), 0.05,
+                                              random.randint(
+                                                  50, 550)), (1, 1), 0.05,
                          img_creep, img_creep_dead))
 
+    main_menu_items = ("Start Game", "Load Game", "Save Game", "Quit")
 
+    main_menu = Menu(main_menu_items)
+    main_menu.drawMenu()
 
     while True:
         time_passed = clock.tick(30)
-
+        text = ""
         for event in pygame.event.get():
+            text = main_menu.handleEvent(event)
             if event.type == pygame.QUIT:
                 exit_game()
             elif event.type == pygame.KEYDOWN:
@@ -55,7 +60,8 @@ def run_game():
                 for crep in creeps:
                     if crep.mouse_click(pygame.mouse.get_pos()):
                         flag = True
-                        combat.Battle.player_start_battle(playa, crep, time_passed)
+                        combat.Battle.player_start_battle(
+                            playa, crep, time_passed)
                     else:
                         flag = False
 
@@ -65,7 +71,6 @@ def run_game():
         if not paused:
             screen.blit(background, (0, 0))
 
-
             for crep in creeps:
                 crep.update(time_passed, playa)
                 crep.draw(time_passed)
@@ -73,14 +78,23 @@ def run_game():
             playa.update(time_passed)
             playa.draw(time_passed)
 
-        
-
         else:
-            pass
-            # menu
-                
+            main_menu.activate()
+            main_menu.drawMenu()
+            if text == "Quit":
+                exit_game()
+            elif text == "Start Game":
+                paused = not paused
+                main_menu.deactivate()
+            elif text == "Load Game":
+                pass
+                # load_game()
+            elif text == "Save Game":
+                pass
+                # save_game()
 
         pygame.display.flip()
+
 
 def exit_game():
     sys.exit()

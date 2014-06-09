@@ -1,33 +1,28 @@
 import pygame
 
+
 class MenuItem (pygame.font.Font):
     '''
     The Menu Item should be derived from the pygame Font class
     '''
-    def __init__(self,text, position,fontSize=36, antialias = 1, color = (255, 255, 255), background=None):
-        pygame.font.Font.__init__(self,None, fontSize)
+    def __init__(self,text, position,font_size=36, antialias = 1, color = (255, 255, 255), background=None):
+        pygame.font.Font.__init__(self,None, font_size)
         self.text = text
         if background == None:
-            self.textSurface = self.render(self.text,antialias,(255,255,255))
+            self.text_surface = self.render(self.text,antialias,(255,255,255))
         else:
-            self.textSurface = self.render(self.text,antialias,(255,255,255),background)
-        self.position=self.textSurface.get_rect(centerx=position[0],centery=position[1])
+            self.text_surface = self.render(self.text,antialias,(255,255,255),background)
+        self.position=self.text_surface.get_rect(centerx=position[0],centery=position[1])
     def get_pos(self):
         return self.position
     def get_text(self):
         return self.text
     def get_surface(self):
-        return self.textSurface
+        return self.text_surface
 
 
 class Menu:
-    '''
-    The Menu should be initalized with a list of menu entries
-    it then creates a menu accordingly and manages the different
-    print Settings needed
-    '''
 
-    # MENUCLICKEDEVENT = USEREVENT +1
 
     def __init__(self,menuEntries, menuCenter = None):
         '''
@@ -43,25 +38,25 @@ class Menu:
         self.active=False
 
         if pygame.font:
-            fontSize = 36
+            font_size = 36
             fontSpace= 4
             # loads the standard font with a size of 36 pixels
-            font = pygame.font.Font(None, fontSize)
+            # font = pygame.font.Font(None, font_size)
 
             # calculate the height and startpoint of the menu
             # leave a space between each menu entry
-            menuHeight = (fontSize+fontSpace)*len(menuEntries)
+            menuHeight = (font_size+fontSpace)*len(menuEntries)
             startY = self.background.get_height()/2 - menuHeight/2  
 
             #listOfTextPositions=list()
             self.menuEntries = list()
             for menuEntry in menuEntries:
                 centerX=self.background.get_width()/2
-                centerY = startY+fontSize+fontSpace
+                centerY = startY+font_size+fontSpace
                 newEnty = MenuItem(menuEntry,(centerX,centerY))
                 self.menuEntries.append(newEnty)
                 self.background.blit(newEnty.get_surface(), newEnty.get_pos())
-                startY=startY+fontSize+fontSpace
+                startY=startY+font_size+fontSpace
 
     def drawMenu(self):
         self.active=True            
@@ -85,5 +80,8 @@ class Menu:
             for menuItem in self.menuEntries:
                 textPos = menuItem.get_pos()
                 #check if current event is in the text area 
-                # if eventX &gt; textPos.left and eventX &lt; textPos.right \
-                #                 and eventY &gt; textPos.top and eventY
+
+                if textPos.collidepoint(eventX, eventY):
+                    return menuItem.get_text
+                    
+
