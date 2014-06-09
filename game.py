@@ -3,6 +3,8 @@ from player import Player
 from creep import Creep
 import combat
 import sys
+from menu import *
+import random
 
 
 def run_game():
@@ -32,9 +34,12 @@ def run_game():
 
     creeps.add(crp)
 
-    # for i in range(10):
-    #     creeps.add(Creep(screen, field_rect, (150, 150), (1, 1), 0.05,
-    #                      img_creep, img_creep_dead))
+    for i in range(10):
+        creeps.add(Creep(screen, field_rect, (random.randint(50, 550),
+            random.randint(50, 550)), (1, 1), 0.05,
+                         img_creep, img_creep_dead))
+
+
 
     while True:
         time_passed = clock.tick(30)
@@ -61,7 +66,6 @@ def run_game():
             screen.blit(background, (0, 0))
 
 
-
             for crep in creeps:
                 crep.update(time_passed, playa)
                 crep.draw(time_passed)
@@ -69,12 +73,14 @@ def run_game():
             playa.update(time_passed)
             playa.draw(time_passed)
 
-            pygame.display.flip()
+        
 
         else:
             pass
-            # menus
+            # menu
+                
 
+        pygame.display.flip()
 
 def exit_game():
     sys.exit()
