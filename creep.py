@@ -169,7 +169,7 @@ class Creep(Sprite):
                 self.bullets.remove(bullet)
 
     def attack(self, target, time_passed):
-        self.bullets.append(Bullet(target, self.pos, pygame.image.load('creep_bullet.jpg')))
+        self.bullets.append(Bullet(target, self.pos, pygame.image.load('creep_bullet.png')))
         damage = self.attack_power - target.deffence_power
         if damage > 0:
             target.deffence(damage, time_passed)
