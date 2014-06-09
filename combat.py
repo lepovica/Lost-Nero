@@ -24,7 +24,8 @@ class Battle():
     def do_battle(cls, attacker, target, time_passed):
         if cls._battle_time == 0:
             attacker.attack(target, time_passed)
+        if cls._battle_time >= 500 and cls._battle_time <= 540:
             target.attack(attacker, time_passed)
         cls._battle_time += time_passed
-        if cls._battle_time >= 500:
+        if cls._battle_time > 1000:
             cls._battle_time = 0

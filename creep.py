@@ -4,7 +4,7 @@ import combat
 from pygame.sprite import Sprite
 from random import randint
 import random
-
+from bullet import Bullet
 from vec2d import vec2d
 import math
 
@@ -40,6 +40,9 @@ class Creep(Sprite):
         self.reborn_time = 0
         self._time_moving = 0
         self._time_moving_max = random.randint(5000, 10000)
+
+        self.bullets = []
+
     (ALIVE, DEAD) = range(2)
 
     def update(self, time_passed, target):
@@ -148,14 +151,25 @@ class Creep(Sprite):
         dy = self.pos.y - wanted_pos.y
         self.direction = vec2d(-dx, -dy).normalized()
 
-    def draw(self):
+    def draw(self, time_passed):
         print("{0} : {1}".format(self.name, self.pos))
         draw_rect = self.image.get_rect().move(
             self.pos.x - self.image_w / 2,
             self.pos.y - self.image_h / 2)
         self.screen.blit(self.image, self.pos)
 
+        for bullet in self.bullets:
+            if bullet.state == bullet.MOVING:
+                bullet.update(time_passed)
+                bullet_rect = bullet.image.get_rect().move(
+                    bullet.pos.x - 7,
+                    bullet.pos.y - 7)
+                self.screen.blit(bullet.image, bullet_rect)
+            if bullet.state == bullet.DEAD:
+                self.bullets.remove(bullet)
+
     def attack(self, target, time_passed):
+        self.bullets.append(Bullet(target, self.pos, pygame.image.load('creep_bullet.jpg')))
         damage = self.attack_power - target.deffence_power
         if damage > 0:
             target.deffence(damage, time_passed)

@@ -53,11 +53,11 @@ def run_game():
 
         for crep in creeps:
             crep.update(time_passed, playa)
-            crep.draw()
+            crep.draw(time_passed)
 
         playa.update(time_passed)
         playa.draw(time_passed)
-        
+
         pygame.display.flip()
 
 

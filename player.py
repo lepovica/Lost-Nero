@@ -6,50 +6,9 @@ import math
 import combat
 from pygame import Color
 import sys
+from bullet import Bullet
 
 # do creep code look pretty
-
-class Bullet(Sprite):
-
-    def __init__(self, target, pos, img_file):
-        Sprite.__init__(self)
-        self.pos = vec2d(pos)
-        self.base_image = img_file
-        self.image = self.base_image
-        self.speed = 0.5
-        self.target = target
-        self.state = self.MOVING
-
-    (MOVING, DEAD) = range(2)
-
-    def update(self, time_passed):
-        if (self.target.pos.x - self.pos.x)**2 + (self.target.pos.y - self.pos.y)**2 <= 20**2:
-            self.state = self.DEAD
-        else:
-            self.change_direction()
-            self.move(time_passed)
-            self.rotate_image()
-            
-
-    def change_direction(self):
-        self.direction = self.get_direction(self.target.pos)
-
-
-    def get_direction(self, wanted_pos):
-        dx = self.pos.x - wanted_pos.x
-        dy = self.pos.y - wanted_pos.y
-        return vec2d(-dx, -dy).normalized()
-
-    def rotate_image(self):
-        self.image = pygame.transform.rotate(
-            self.base_image, -self.direction.angle)
-
-    def move(self, time_passed):
-        displacement = vec2d(
-            self.direction.x * self.speed * time_passed,
-            self.direction.y * self.speed * time_passed)
-
-        self.pos += displacement
 
 
 class Player(Sprite):
@@ -102,7 +61,7 @@ class Player(Sprite):
             if self.life > 0 and self.chasing_target.life > 0:
                 self.change_direction(self.chasing_target.pos)
                 self.rotate_image()
-                if 50**2 <= (self.chasing_target.pos.x - self.pos.x)**2 + (self.chasing_target.pos.y - self.pos.y) **2:
+                if 100**2 <= (self.chasing_target.pos.x - self.pos.x)**2 + (self.chasing_target.pos.y - self.pos.y) **2:
                     self.move(time_passed)
                 combat.Battle.do_battle(self, self.chasing_target, time_passed)
                 self.health_bar()
@@ -233,7 +192,6 @@ class Player(Sprite):
                     bullet.pos.y - 7)
                 self.screen.blit(bullet.image, bullet_rect)
             if bullet.state == bullet.DEAD:
-                print("-------------REMOVE BULLET _-------------------")
                 self.bullets.remove(bullet)
 
 
