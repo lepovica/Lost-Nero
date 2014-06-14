@@ -157,7 +157,7 @@ class Creep(Sprite):
         draw_rect = self.image.get_rect().move(
             self.pos.x - self.image_w / 2,
             self.pos.y - self.image_h / 2)
-        self.screen.blit(self.image, self.pos)
+        self.screen.blit(self.image, draw_rect)
 
         for bullet in self.bullets:
             if bullet.state == bullet.MOVING:
