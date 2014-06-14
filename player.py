@@ -182,7 +182,7 @@ class Player(Sprite):
         draw_rect = self.image.get_rect().move(
             self.pos.x - self.image_w / 2,
             self.pos.y - self.image_h / 2)
-        self.screen.blit(self.image, self.pos)
+        self.screen.blit(self.image, draw_rect)
 
         for bullet in self.bullets:
             if bullet.state == bullet.MOVING:
@@ -225,7 +225,8 @@ class Player(Sprite):
         return False
 
     def attack(self, target, time_passed):
-        self.bullets.append(Bullet(target, self.pos, pygame.image.load('Nero_bullet.png')))
+        self.bullets.append(Bullet(target, self.pos,
+            pygame.transform.rotate(pygame.image.load('Nero_bullet.png'),-45)))
         damage = self.attack_power - target.deffence_power
         if damage > 0:
             self.expirience += 0.10 * self.attack_power + 0.10 * damage
