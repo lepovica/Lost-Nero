@@ -16,7 +16,7 @@ class Bullet(Sprite):
     (MOVING, DEAD) = range(2)
 
     def update(self, time_passed):
-        if (self.target.pos.x - self.pos.x)**2 + (self.target.pos.y - self.pos.y)**2 <= 20**2:
+        if (self.target.pos.x - self.pos.x)**2 + (self.target.pos.y - self.pos.y)**2 <= 10**2:
             self.state = self.DEAD
         else:
             self.change_direction()

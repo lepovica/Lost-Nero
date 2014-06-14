@@ -49,14 +49,12 @@ def run_game():
                     paused = not paused
 
             elif event.type == pygame.MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[0]:
+                flag = False
                 for crep in creeps:
                     if crep.mouse_click(pygame.mouse.get_pos()):
                         flag = True
                         combat.Battle.player_start_battle(
                             playa, crep, time_passed)
-                    else:
-                        flag = False
-
                 if flag == False:
                     playa.moving(pygame.mouse.get_pos())
 

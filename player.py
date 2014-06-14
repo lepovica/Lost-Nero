@@ -188,10 +188,10 @@ class Player(Sprite):
             if bullet.state == bullet.MOVING:
                 bullet.update(time_passed)
                 bullet_rect = bullet.image.get_rect().move(
-                    bullet.pos.x - 7,
-                    bullet.pos.y - 7)
+                    bullet.pos.x - bullet.image.get_size()[0]/2,
+                    bullet.pos.y - bullet.image.get_size()[1]/2)
                 self.screen.blit(bullet.image, bullet_rect)
-            if bullet.state == bullet.DEAD:
+            elif bullet.state == bullet.DEAD:
                 self.bullets.remove(bullet)
 
 

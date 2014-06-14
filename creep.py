@@ -7,6 +7,7 @@ import random
 from bullet import Bullet
 from vec2d import vec2d
 import math
+import sys
 
 
 class Creep(Sprite):
@@ -113,7 +114,7 @@ class Creep(Sprite):
         return False
 
     def is_inside_me(self, pos):
-        if (self.pos.x - pos.x) ** 2 + (self.pos.y - pos.y) ** 2 <= 25 ** 2:
+        if (self.pos.x - pos.x) ** 2 + (self.pos.y - pos.y) ** 2 <= 50 ** 2:
             return True
         return False
 
@@ -162,10 +163,10 @@ class Creep(Sprite):
             if bullet.state == bullet.MOVING:
                 bullet.update(time_passed)
                 bullet_rect = bullet.image.get_rect().move(
-                    bullet.pos.x - 7,
-                    bullet.pos.y - 7)
+                    bullet.pos.x - bullet.image.get_size()[0]/2,
+                    bullet.pos.y - bullet.image.get_size()[1]/2)
                 self.screen.blit(bullet.image, bullet_rect)
-            if bullet.state == bullet.DEAD:
+            elif bullet.state == bullet.DEAD:
                 self.bullets.remove(bullet)
 
     def attack(self, target, time_passed):
