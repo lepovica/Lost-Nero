@@ -94,6 +94,7 @@ def run_game():
                         paused = not paused
                         main_menu.deactivate()
                         print("Start Game")
+                        exit_game()
                     else:
                         main_menu.deactivate()
                         pass

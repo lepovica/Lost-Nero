@@ -70,17 +70,20 @@ class Menu:
         self.active = False
     def handleEvent(self,event):
         print("handle")
-        if event.type == pygame.MOUSEBUTTONDOWN and self.isActive():
+        if event.type == pygame.MOUSEBUTTONDOWN \
+            and pygame.mouse.get_pressed()[0] and self.isActive():
             print("get_pos")
             # get x and y of the current event 
-            eventX = event.pos[0]
-            eventY = event.pos[1]
+            eventX = pygame.mouse.get_pos()[0]
+            eventY = pygame.mouse.get_pos()[1]
             # for each text position 
             for menuItem in self.menuEntries:
                 print("check")
+                text_w, text_h = menuItem.size(menuItem.get_text())
                 text_pos = menuItem.get_pos()
+                print(text_w, text_h, "--------------")
                 #check if current event is in the text area 
-                if abs(text_pos.x - eventX) <= 18 and abs(text_pos.y - eventY) <= 30:
+                if abs(text_pos.x - eventX) <= text_w/2 and abs(text_pos.top - eventY) <= text_h/2:
                     return (True , menuItem.get_text())
         return (False, False)
                     
