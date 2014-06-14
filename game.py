@@ -42,6 +42,7 @@ def run_game():
                                               0.05, img_creep, img_creep_dead))
 
     main_menu = menu.Menu(menu_entries)
+    main_menu.activate()
 
     while True:
         time_passed = clock.tick(30)
@@ -53,7 +54,8 @@ def run_game():
                 if event.key == pygame.K_ESCAPE:
                     paused = not paused
 
-            elif event.type == pygame.MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[0]:
+            elif event.type == pygame.MOUSEBUTTONDOWN and \
+                 pygame.mouse.get_pressed()[0] and not paused:
                 flag = False
                 for crep in creeps:
                     if crep.mouse_click(pygame.mouse.get_pos()):
@@ -82,15 +84,16 @@ def run_game():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     exit_game()
-                else:
-                    event_text = main_menu.handleEvent(event)
-                    if event_text == "Quit":
+                event_text = main_menu.handleEvent(event)
+                if event_text[0] == True:
+                    print("True")
+                    if event_text[1] == "Quit":
                         main_menu.deactivate()
                         exit_game()
-                    elif event_text == "Start Game":
+                    elif event_text[1] == "Start Game":
                         paused = not paused
                         main_menu.deactivate()
-                        print("Start Gane")
+                        print("Start Game")
                     else:
                         main_menu.deactivate()
                         pass

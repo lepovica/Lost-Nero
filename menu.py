@@ -23,7 +23,6 @@ class MenuItem (pygame.font.Font):
 
 class Menu:
 
-
     def __init__(self,menuEntries, menuCenter = None):
         '''
         The constructer uses a list of string for the menu entries,
@@ -70,17 +69,19 @@ class Menu:
     def deactivate(self):
         self.active = False
     def handleEvent(self,event):
+        print("handle")
         if event.type == pygame.MOUSEBUTTONDOWN and self.isActive():
-            # initiate with menu Item 0
-            curItem = 0
+            print("get_pos")
             # get x and y of the current event 
             eventX = event.pos[0]
             eventY = event.pos[1]
             # for each text position 
             for menuItem in self.menuEntries:
-                text_rect = menuItem.get_pos()
+                print("check")
+                text_pos = menuItem.get_pos()
                 #check if current event is in the text area 
-                if text_rect.collidepoint(eventX, eventY):
-                    return menuItem.get_text
+                if abs(text_pos.x - eventX) <= 18 and abs(text_pos.y - eventY) <= 30:
+                    return (True , menuItem.get_text())
+        return (False, False)
                     
 
