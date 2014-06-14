@@ -225,8 +225,8 @@ class Player(Sprite):
         return False
 
     def attack(self, target, time_passed):
-        self.bullets.append(Bullet(target, self.pos,
-            pygame.transform.rotate(pygame.image.load('Nero_bullet.png'),-45)))
+        self.bullets.append(Bullet(target, self.pos, 
+            pygame.transform.scale(pygame.transform.rotate(pygame.image.load('Nero_bullet.png'),-45), (50, 50))))
         damage = self.attack_power - target.deffence_power
         if damage > 0:
             self.expirience += 0.10 * self.attack_power + 0.10 * damage

@@ -4,6 +4,7 @@ from creep import Creep
 import combat
 import sys
 import random
+import menu
 
 
 def run_game():
@@ -23,6 +24,8 @@ def run_game():
     img_creep = pygame.image.load('creep.png')
     img_creep_dead = pygame.image.load('dead_creep.png')
 
+    menu_entries = ("Start Game", "Load", "Save", "Quit")
+
     creeps = pygame.sprite.Group()
 
     playa = Player(screen, field_rect, (50, 50), (0, 0), 0.07, img_playa,
@@ -37,6 +40,8 @@ def run_game():
         creeps.add(Creep(screen, field_rect, (random.randint(50, 550),
                                               random.randint(50, 550)), (1, 1),
                                               0.05, img_creep, img_creep_dead))
+
+    main_menu = menu.Menu(menu_entries)
 
     while True:
         time_passed = clock.tick(30)
@@ -59,6 +64,7 @@ def run_game():
                     playa.moving(pygame.mouse.get_pos())
 
         if not paused:
+            main_menu.deactivate()
             screen.blit(background, (0, 0))
 
             for crep in creeps:
@@ -71,10 +77,25 @@ def run_game():
             pygame.display.flip()
 
         else:
-
+            main_menu.activate()
+            main_menu.drawMenu()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     exit_game()
+                else:
+                    event_text = main_menu.handleEvent(event)
+                    if event_text == "Quit":
+                        main_menu.deactivate()
+                        exit_game()
+                    elif event_text == "Start Game":
+                        paused = not paused
+                        main_menu.deactivate()
+                        print("Start Gane")
+                    else:
+                        main_menu.deactivate()
+                        pass
+            pygame.display.flip()
+
 
 
 

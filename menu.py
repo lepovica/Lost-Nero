@@ -78,10 +78,9 @@ class Menu:
             eventY = event.pos[1]
             # for each text position 
             for menuItem in self.menuEntries:
-                textPos = menuItem.get_pos()
+                text_rect = menuItem.get_pos()
                 #check if current event is in the text area 
-
-                if textPos.collidepoint(eventX, eventY):
+                if text_rect.collidepoint(eventX, eventY):
                     return menuItem.get_text
                     
 
