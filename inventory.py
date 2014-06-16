@@ -16,6 +16,14 @@ for i in range(8):
 ARM_IMG = [3]
 FLA_IMG = [4]
 
+WEAPONS = {item_name, type(x, Item, {pos : vec2d(pos), screen : display,
+                           base_image : img_file, image : img_file, 
+                           state : DROPPED, item_type : item_type, 
+                           level_required : level, name : item_name,
+                           attack_power : level*20, deffence_power : level*5,
+                           price : level*100, armor : level*100} \
+                           for item_name in WEAPONS}
+
 
 class Item(pygame.sprite.Sprite):
     (DROPPED, GETTED) = range(2)
