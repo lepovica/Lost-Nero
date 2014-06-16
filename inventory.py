@@ -131,13 +131,18 @@ class Inventory:
         item.state = item.DROPPED
 
 
-    def add_inventory(self, pos_inventory, item):
+    def add_item_inventory(self, pos_inventory, item):
         if self.inverntory[pos_inventory] == None:
             self.inverntory[pos_inventory] = item
         else:
-            old_item = self.inverntory.pop(pos_inventory)
+            self.remove_item_inventory(pos_inventory)
             self.inverntory.insert(pos_inventory, item)
-            self.add_item_bag(old_item)
+
+    def remove_item_inventory(self, pos_inventory):
+        if self.inverntory[pos_inventory] != None:
+            removed_item = self.inverntory[pos_inventory]
+            self.inverntory[pos_inventory] = None
+            self.add_item_bag(removed_item)
 
     
 
