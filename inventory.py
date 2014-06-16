@@ -4,7 +4,6 @@ from random import choice
 
 level = 1
 display = "screen"
-(DROPPED, GETTED) = range(2)
 pos = (100, 100)
 
 
@@ -69,19 +68,81 @@ for img_file in SWORD_IMG:
     SWORDS[str(i) + "_sword"] = type(str(i) + "_sword", (Item,), {
                            'pos' : vec2d(pos), 'screen' : display,
                            'base_image' : img_file, 'image' : img_file, 
-                           'state' : DROPPED, 'item_type' : ITEM_TYPES[0], 
+                           'state' : 0, 'item_type' : ITEM_TYPES[0], 
                            'level_required' : level, 'name' : str(i) + "_sword",
                            'attack_power' : level*20, 'deffence_power' : level*5,
                            'price' : level*100, 'armor' : level*100 })
 
 
+class Cell(pygame.sprite.Sprite):
+    def __init__(self, screen, pos, item = None, background = None):
+        pygame.sprite.Sprite.__init__(self)
+        self.pos = vec2d(pos)
+        self.item = item
+        self.screen = screen
+        self.background = background
+        self.side = 60
+
+    def is_empty(self):
+        return self.item == None
+
+    def draw():
+        cell_rect = None
+        if self.background == None:
+            cell_rect = self.texture.get_rect()
+        else:
+            cell_rect = self.background.get_rect()
+
+        cell_rect.move(
+                self.pos.x - self.image.get_size()[0] / 2,
+                self.pos.y - self.image.get_size()[1] / 2)
+        self.screen.blit(self.image, item_rect)
+
 
 class Inventory:
 
+    (WEAPON, SHIELD, CHEST, SHOULDERS, SHIELD, GLOVES,
+        BOOTS, PANTS, MANTLE, HELMET, SKIRT,) = range(11)
+
     def __init__(self, screen):
         self.screen = screen
-        self.bag_page = 0
+        self.bag_pages = 1
         self.bag = [[]]
-        self.abilities = []
+        self.inverntory = list()
+        for i in range(11):
+            self.inverntory[i] = None
+        self.bar = []
+
+    def add_item_bag(self, item):
+        if self.bag_pages <= 3:
+            if len(self.bag[self.bag_pages]) == 9 and self.bag_pages < 3:
+                self.bag_pages += 1
+            else:
+                return
+            item.state = item.GETTED
+            cell_position = (self.bag_pages, len(self.bag[self.bag_pages]))
+            self.bag[self.bag_pages].apeend(Cell(self.screen, cell_position,
+                                            item, background))
+
+
+    def remove_item_bag(self, item):
+        deleting_pos = (item.pos.x, item.pos.y)
+        self.bag[deleting_pos[0]].pop(deleting_pos[1])
+        item.state = item.DROPPED
+
+
+    def add_inventory(self, pos_inventory, item):
+        if self.inverntory[pos_inventory] == None:
+            self.inverntory[pos_inventory] = item
+        else:
+            old_item = self.inverntory.pop(pos_inventory)
+            self.inverntory.insert(pos_inventory, item)
+            self.add_item_bag(old_item)
+
+    
+
+
+i = Inventory(display)
+i.add_inventory(0, "A")
 
 
