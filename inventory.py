@@ -8,7 +8,11 @@ ARMORS = [
     'chest', 'shoulders', 'shield', 'gloves', 'boots', 'pants', 'mantle',
     'helmet', 'skirt']
 FLASKS = ['healt', 'armor']
-WEP_IMG = [2]
+WEP_IMG = []
+# do other items
+for i in range(8):
+    WEP_IMG.append(pygame.image.load('sw'+str(i+1)+'.png'))
+
 ARM_IMG = [3]
 FLA_IMG = [4]
 
@@ -22,7 +26,8 @@ class Item(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.pos = vec2d(pos)
         self.screen = screen
-        self.image = img_file
+        self.base_image = img_file
+        self.image = self.base_image
         self.state = self.DROPPED
         self.type = item_type
         self.attack_power = attack_power
@@ -39,10 +44,10 @@ class Item(pygame.sprite.Sprite):
         self.state = self.GETTED
 
     def draw(self):
-        bullet_rect = bullet.image.get_rect().move(
-            bullet.pos.x - bullet.image.get_size()[0] / 2,
-            bullet.pos.y - bullet.image.get_size()[1] / 2)
-        self.screen.blit(self.image, bullet_rect)
+        item_rect = self.image.get_rect().move(
+            self.pos.x - self.image.get_size()[0] / 2,
+            self.pos.y - self.image.get_size()[1] / 2)
+        self.screen.blit(self.image, item_rect)
 
 
 class Inventory:
@@ -55,7 +60,8 @@ class Inventory:
 
 
 def generate_item(pos, screen, level):
-    item_type = choice(TYPES.values())
+    # item_type = TYPES[choice(['weapon','armor','flasks'])]
+    item_type = 0
     if item_type == 0:
         print(0)
         name = choice(WEAPONS)
@@ -93,5 +99,4 @@ def generate_item(pos, screen, level):
                     price, attack_power, deffence_power, armor, name, level)
         return item
 
-item = generate_item((1,4), 2, 3)
-print (item)
+

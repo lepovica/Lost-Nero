@@ -5,6 +5,7 @@ import combat
 import sys
 import random
 import menu
+import inventory
 
 
 def run_game():
@@ -43,7 +44,7 @@ def run_game():
 
     main_menu = menu.Menu(menu_entries)
     main_menu.activate()
-
+    sw = inventory.generate_item((100,100),screen, 2)
     while True:
         time_passed = clock.tick(30)
 
@@ -75,7 +76,7 @@ def run_game():
 
             playa.update(time_passed)
             playa.draw(time_passed)
-
+            sw.draw()
             pygame.display.flip()
 
         else:
