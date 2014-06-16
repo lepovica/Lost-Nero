@@ -2,27 +2,29 @@ import pygame
 from vec2d import vec2d
 from random import choice
 
-TYPES = {'weapon': 0, 'armor': 1, 'flask': 2}
-WEAPONS = ['sword', 'axe', 'staff', 'bow']
-ARMORS = [
+level = 1
+display = "screen"
+(DROPPED, GETTED) = range(2)
+pos = (100, 100)
+
+
+ITEM_TYPES = ['weapon', 'armor', 'flask']
+WEAPONS_ID = ['sword', 'axe', 'staff', 'bow']
+ARMORS_ID = [
     'chest', 'shoulders', 'shield', 'gloves', 'boots', 'pants', 'mantle',
     'helmet', 'skirt']
-FLASKS = ['healt', 'armor']
-WEP_IMG = []
-# do other items
-for i in range(8):
-    WEP_IMG.append(pygame.image.load('sw'+str(i+1)+'.png'))
+FLASKS_ID = ['healt', 'armor']
 
-ARM_IMG = [3]
-FLA_IMG = [4]
+SWORD_IMG = list()
+AXES_IMG = list()
+STAFF_IMG = list()
+BOW_IMG = list()
 
-WEAPONS = {item_name, type(x, Item, {pos : vec2d(pos), screen : display,
-                           base_image : img_file, image : img_file, 
-                           state : DROPPED, item_type : item_type, 
-                           level_required : level, name : item_name,
-                           attack_power : level*20, deffence_power : level*5,
-                           price : level*100, armor : level*100} \
-                           for item_name in WEAPONS}
+for i in range(47):
+    SWORD_IMG.append(pygame.image.load('sw'+str(i+1)+'.png'))
+    AXES_IMG.append(pygame.image.load('sw'+str(i+1)+'.png'))
+    STAFF_IMG.append(pygame.image.load('sw'+str(i+1)+'.png'))
+    BOW_IMG.append(pygame.image.load('sw'+str(i+1)+'.png'))
 
 
 class Item(pygame.sprite.Sprite):
@@ -58,6 +60,22 @@ class Item(pygame.sprite.Sprite):
         self.screen.blit(self.image, item_rect)
 
 
+
+SWORDS = dict()
+
+for img_file in SWORD_IMG:
+    i += i + 1
+
+    SWORDS[str(i) + "_sword"] = type(str(i) + "_sword", (Item,), {
+                           'pos' : vec2d(pos), 'screen' : display,
+                           'base_image' : img_file, 'image' : img_file, 
+                           'state' : DROPPED, 'item_type' : ITEM_TYPES[0], 
+                           'level_required' : level, 'name' : str(i) + "_sword",
+                           'attack_power' : level*20, 'deffence_power' : level*5,
+                           'price' : level*100, 'armor' : level*100 })
+
+
+
 class Inventory:
 
     def __init__(self, screen):
@@ -65,46 +83,5 @@ class Inventory:
         self.bag_page = 0
         self.bag = [[]]
         self.abilities = []
-
-
-def generate_item(pos, screen, level):
-    # item_type = TYPES[choice(['weapon','armor','flasks'])]
-    item_type = 0
-    if item_type == 0:
-        print(0)
-        name = choice(WEAPONS)
-        img_file = choice(WEP_IMG)
-        price = level * 100
-        attack_power = level * 20
-        deffence_power = level * 5
-        armor = level * 20
-
-        item = Item(screen, pos, img_file, item_type,
-                    price, attack_power, deffence_power, armor, name, level)
-        return item
-    elif item_type == 1:
-        print(1)
-        name = choice(ARMORS)
-        img_file = choice(ARM_IMG)
-        price = level * 100
-        attack_power = level * 5
-        deffence_power = level * 20
-        armor = level * 30
-
-        item = Item(screen, pos, img_file, item_type,
-                    price, attack_power, deffence_power, armor, name, level)
-        return item
-    elif item_type == 2:
-        print(2)
-        name = choice(FLASKS)
-        img_file = choice(FLA_IMG)
-        price = level * 100
-        attack_power = 0
-        deffence_power = 0
-        armor = 0
-
-        item = Item(screen, pos, img_file, item_type,
-                    price, attack_power, deffence_power, armor, name, level)
-        return item
 
 
