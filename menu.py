@@ -81,9 +81,8 @@ class Menu:
                 print("check")
                 text_w, text_h = menuItem.size(menuItem.get_text())
                 text_pos = menuItem.get_pos()
-                print(text_w, text_h, "--------------")
                 #check if current event is in the text area 
-                if abs(text_pos.x - eventX) <= text_w/2 and abs(text_pos.top - eventY) <= text_h/2:
+                if abs(text_pos.x - eventX) <= text_w/2 and abs(text_pos.y - eventY) <= text_h/2:
                     return (True , menuItem.get_text())
         return (False, False)
                     

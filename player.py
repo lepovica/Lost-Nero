@@ -61,7 +61,7 @@ class Player(Sprite):
             if self.life > 0 and self.chasing_target.life > 0:
                 self.change_direction(self.chasing_target.pos)
                 self.rotate_image()
-                if 100**2 <= (self.chasing_target.pos.x - self.pos.x)**2 + (self.chasing_target.pos.y - self.pos.y) **2:
+                if 50**2 <= (self.chasing_target.pos.x - self.pos.x)**2 + (self.chasing_target.pos.y - self.pos.y) **2:
                     self.move(time_passed)
                 combat.Battle.do_battle(self, self.chasing_target, time_passed)
                 self.health_bar()
@@ -238,6 +238,7 @@ class Player(Sprite):
             # return Ressist ----//----
 
     def deffence(self, damage, time_passed):
+        self.state = self.FIGHTING
         if damage > 0:
             if self.armor > 0:
                 self.armor -= damage * 0.3

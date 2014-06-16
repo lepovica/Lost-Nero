@@ -44,9 +44,24 @@ class Creep(Sprite):
 
         self.bullets = []
 
-    (ALIVE, DEAD) = range(2)
+    (ALIVE, DEAD, FIGHTING) = range(3)
 
     def update(self, time_passed, target):
+        if self.state == self.FIGHTING:
+            if self.life > 0 and target.life > 0:
+                self.get_direction(target.pos)
+                self.rotate_image()
+                if 50**2 <= (target.pos.x - self.pos.x)**2 + (target.pos.y - self.pos.y) **2:
+                    self.move(time_passed)
+                combat.Battle.do_battle(self, target, time_passed)
+                self.health_bar()
+            else:
+                if self.life > 0 :
+                    self.state = self.ALIVE
+                    self.health_bar()
+                else:
+                    self.state = self.DEAD
+
         if self.state == self.ALIVE:
             self._time_moving += time_passed
             if self.check_target(target, time_passed):
@@ -129,10 +144,11 @@ class Creep(Sprite):
     def check_target(self, target, time_passed):
         target_dist = (target.pos.x - self.pos.x) ** 2 + \
             (target.pos.y - self.pos.y) ** 2
-        if 30 ** 2 <= target_dist <= 50 ** 2 and target.state == self.ALIVE:
+        if 30 ** 2 < target_dist <= 50 ** 2 and target.state == self.ALIVE:
             return True
-        elif target_dist <= 10 ** 2 and target.state == self.ALIVE:
+        elif target_dist <= 30 ** 2 and target.state == self.ALIVE:
             combat.Battle.creep_start_battle(self, target, time_passed)
+            self.state = self.FIGHTING
 
         return False
 
@@ -182,6 +198,7 @@ class Creep(Sprite):
             # return Ressist ----//----
 
     def deffence(self, damage, time_passed):
+        self.state = self.FIGHTING
         if damage > 0:
             self.life -= damage
             if self.life <= 0:
