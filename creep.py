@@ -189,6 +189,7 @@ class Creep(Sprite):
         self.bullets.append(Bullet(target, self.pos,
             pygame.transform.rotate(pygame.image.load('creep_bullet.png'),-45)))
         damage = self.attack_power - target.deffence_power
+        target.chasing_target = self
         if damage > 0:
             target.deffence(damage, time_passed)
             # return Hit and damage for display event

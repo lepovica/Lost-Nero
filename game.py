@@ -6,6 +6,8 @@ import sys
 import random
 import menu
 import inventory
+from inventory import Inventory
+
 
 
 def run_game():
@@ -19,7 +21,8 @@ def run_game():
     clock = pygame.time.Clock()
 
     background = pygame.image.load('background.jpg')
-
+    texture = pygame.image.load('texture.png')
+    inventory = Inventory(screen, texture)
     img_playa = pygame.image.load('player.png')
     img_playa_dead = pygame.image.load('dead_player.png')
     img_creep = pygame.image.load('creep.png')
@@ -44,7 +47,7 @@ def run_game():
 
     main_menu = menu.Menu(menu_entries)
     main_menu.activate()
-    sw = inventory.generate_item((100,100),screen, 2)
+
     while True:
         time_passed = clock.tick(30)
 
@@ -76,7 +79,7 @@ def run_game():
 
             playa.update(time_passed)
             playa.draw(time_passed)
-            sw.draw()
+            inventory.draw()
             pygame.display.flip()
 
         else:
